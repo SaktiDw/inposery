@@ -1,0 +1,64 @@
+// Vitest Snapshot v1
+
+exports[`Login Page Testing > Should be render Login Page 1`] = `
+<div>
+  <div
+    class="w-full min-h-screen bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-white flex items-center justify-center"
+  >
+    <form
+      action="#"
+      class="flex flex-col gap-4 w-1/2"
+    >
+      <div
+        class="text-3xl"
+      >
+        Login
+      </div>
+      <div
+        class="flex flex-col gap-2"
+      >
+        <label
+          class="font-semibold leading-tight text-slate-800 dark:text-white"
+          for="email"
+        >
+          E-mail
+        </label>
+        <input
+          class="py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md ring-lime-500"
+          id="email"
+          name="email"
+          placeholder="e.g example@gmail.com"
+          required=""
+          type="email"
+          value=""
+        />
+      </div>
+      <div
+        class="flex flex-col gap-2"
+      >
+        <label
+          class="font-semibold leading-tight text-slate-800 dark:text-white"
+          for="password"
+        >
+          Password
+        </label>
+        <input
+          class="py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md ring-lime-500"
+          id="password"
+          name="password"
+          placeholder="password"
+          required=""
+          type="password"
+          value=""
+        />
+      </div>
+      <button
+        class="w-full  text-white  bg-green-500 ring-2 ring-green-500 disabled:ring-green-800 disabled:bg-green-800 disabled:cursor-not-allowed disabled:shadow font-semibold shadow-xl py-2 px-4 rounded-lg "
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+`;
