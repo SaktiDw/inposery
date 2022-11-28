@@ -7,6 +7,9 @@ const nextConfig = {
     domains: ['localhost','localhost:8000','images.unsplash.com', '127.0.0.1'],
     formats: ["image/avif", "image/webp"]
   },
+  env: {
+    API_URL: process.env.API_URL,
+  },
 }
 
 module.exports = nextConfig
