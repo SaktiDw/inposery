@@ -1,4 +1,4 @@
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import React, { forwardRef, useEffect, useState } from "react";
 import useSWR from "swr";
 import PriceFormater from "../FormatText/PriceFormater";

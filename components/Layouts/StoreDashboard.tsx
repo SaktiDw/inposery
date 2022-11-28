@@ -23,7 +23,7 @@ const StoreDashboard = ({ children }: { children: React.ReactNode }) => {
         <div className="flex h-screen overflow-hidden">
           <Sidebar isOpen={toggle}>
             <SidebarItem
-              href="/dashboard"
+              href={`/store/${router.query.id}`}
               text="Dashboard"
               active={router.pathname == `${basePath}`}
               icon="fi-rr-apps"
@@ -52,7 +52,7 @@ const StoreDashboard = ({ children }: { children: React.ReactNode }) => {
               active={router.pathname == `${basePath}/receipts`}
               icon="fi-rr-credit-card"
             />
-            <SidebarItem
+            {/* <SidebarItem
               href="/role"
               text="Roles"
               active={router.pathname == `${basePath}/role`}
@@ -63,9 +63,9 @@ const StoreDashboard = ({ children }: { children: React.ReactNode }) => {
               text="Test"
               active={router.pathname == `${basePath}/test`}
               icon="fi-rr-test-tube"
-            />
+            /> */}
           </Sidebar>
-          <main className="w-full min-h-screen overflow-x-hidden overflow-y-auto pt-20 px-8 relative">
+          <main className="flex flex-col w-full h-screen overflow-x-hidden overflow-y-auto pt-20 pb-4 px-8 relative">
             {children}
           </main>
         </div>

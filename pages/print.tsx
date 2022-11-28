@@ -1,5 +1,5 @@
 import { Receipts } from "@/components";
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import React, { useRef, useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
 import useSWR from "swr";
@@ -10,7 +10,7 @@ type Props = {};
 const Print = (props: Props) => {
   const componentRef = useRef(null);
   const { data: receipts } = useSWR("/api/receipts/19", (url) =>
-    axiosInstance.get(url).then((res) => res.data.data)
+    axios.get(url).then((res) => res.data.data)
   );
   return (
     <>

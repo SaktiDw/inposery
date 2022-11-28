@@ -1,4 +1,4 @@
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import React from "react";
 import useSWR from "swr";
 import { Dashboard } from "../components";
@@ -7,7 +7,7 @@ type Props = {};
 
 const Role = (props: Props) => {
   const { data } = useSWR("/api/roles", (url) =>
-    axiosInstance.get(url).then((res) => res.data)
+    axios.get(url).then((res) => res.data)
   );
   return <Dashboard>{JSON.stringify(data)}</Dashboard>;
 };

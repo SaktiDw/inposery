@@ -10,21 +10,23 @@ import {
 const baseURL = "http://localhost:8810";
 // const baseURL = "http://192.168.1.4:8810";
 
-const axiosInstance = axios.create({
+axios.create({
   baseURL,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
+    "X-Requested-With": "XMLHttpRequest",
   },
+  withCredentials: true,
 });
 
 let access_token = getAccessToken();
 let refreshingToken: any = null;
 
-axiosInstance.interceptors.request.use((config) => {
+axios.interceptors.request.use((config) => {
   config.headers = {
-    Authorization: `Bearer ${access_token}`,
+    Authorization: `Bearer ${getAccessToken()}`,
   };
   return config;
 });
@@ -35,7 +37,7 @@ function refreshToken() {
   });
 }
 
-axiosInstance.interceptors.response.use(
+axios.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -53,7 +55,7 @@ axiosInstance.interceptors.response.use(
         if (res.data.data.accessToken) {
           access_token = res.data.data.accessToken;
         }
-        return axiosInstance(config);
+        return axios(config);
       } catch (error) {
         window.location.href = "/login";
         return Promise.reject(error);
@@ -63,4 +65,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default axios;

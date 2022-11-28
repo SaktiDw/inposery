@@ -6,12 +6,12 @@ import {
   SearchInput,
   StoreDashboard,
 } from "@/components/index";
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import React, { useState } from "react";
 import useSWR from "swr";
 import qs from "qs";
 import { useRouter } from "next/router";
-import { useAuth } from "@/helper/context/AuthContext";
+import useAuth from "@/helper/hooks/useAuth";
 
 type Props = {};
 
@@ -24,25 +24,10 @@ const Cashier = (props: Props) => {
   const [perPage, setPerPage] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
 
-  const params = qs.stringify(
+  const query = qs.stringify(
     {
-      where: {
-        _and: [
-          {
-            store: {
-              id: storeId,
-              user: user.id,
-            },
-            name: {
-              _like: `%${search}%`,
-            },
-            qty: {
-              _gt: 0,
-            },
-          },
-        ],
-      },
-      perPage,
+      filter: { name: `${search}`, store_id: storeId },
+      limit: perPage,
       page: pageIndex,
     },
     { encodeValuesOnly: true }
@@ -51,8 +36,8 @@ const Cashier = (props: Props) => {
     data: products,
     error,
     mutate,
-  } = useSWR(`/api/products?${params}`, (url) =>
-    axiosInstance.get(url).then((res) => res.data)
+  } = useSWR(`/api/products?${query}`, (url) =>
+    axios.get(url).then((res) => res.data)
   );
 
   const [cart, setCart] = useState<any>([]);
@@ -61,7 +46,7 @@ const Cashier = (props: Props) => {
     const product = {
       id: item.id,
       name: item.name,
-      sellPrice: item.sellPrice,
+      sell_price: item.sell_price,
       qty: item.qty,
       orderQty: 1,
     };
@@ -81,18 +66,20 @@ const Cashier = (props: Props) => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4">
           {products &&
-            products.data.map((item: any) => {
-              return (
-                <ProductCard
-                  key={item.id}
-                  data={item}
-                  onClick={() => handleAddCart(item)}
-                />
-              );
-            })}
+            products.data
+              .filter((item: any) => item.qty > 0)
+              .map((item: any) => {
+                return (
+                  <ProductCard
+                    key={item.id}
+                    data={item}
+                    onClick={() => handleAddCart(item)}
+                  />
+                );
+              })}
         </div>
-        {products && <Pagination meta={products.meta} setPage={setPageIndex} />}
       </div>
+      {products && <Pagination data={products} setPage={setPageIndex} />}
 
       <CashierForm
         cart={cart}

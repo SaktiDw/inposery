@@ -9,18 +9,17 @@ export interface TableColumn<T = any> {
 }
 
 type Props = {
-  data: {
-    data: any[];
-    meta: any;
-  };
+  data: any;
   columns: TableColumn[];
   selected?: Selected[];
   setSelected?: Dispatch<SetStateAction<Selected[]>>;
 };
+
 type Selected = {
   selected: boolean;
   id: number;
 };
+
 const Table = (props: Props) => {
   const [isChecked, setIsChecked] = useState(false);
   const selectAll = (e: any) => {
@@ -92,7 +91,7 @@ const Table = (props: Props) => {
                   if (col.render) toShown = col.render(item, index);
                   if (col.dataType === "numbering") {
                     toShown =
-                      (props.data.meta.page - 1) * props.data.meta.perPage +
+                      (props.data.current_page - 1) * props.data.per_page +
                       index +
                       1;
                   }

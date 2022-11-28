@@ -11,7 +11,7 @@ const Modal = (props: Props) => {
   return (
     // ini modal container
     <div
-      className={`fixed z-50 top-0 left-0 w-full h-screen overflow-y-auto ${
+      className={`fixed z-50 top-0 left-0 w-full min-h-screen overflow-y-auto py-4 ${
         props.isOpen ? "flex" : "hidden"
       } flex-col items-center justify-center`}
     >
@@ -24,9 +24,9 @@ const Modal = (props: Props) => {
       ></div>
       {/* ini modal */}
       <div
-        className={`absolute z-50  ${
+        className={`absolute z-50 top-2 ${
           props.isOpen ? "flex" : "hidden"
-        } flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 dark:bg-opacity-80 backdrop-blur-lg my-8 p-4
+        } flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900 dark:bg-opacity-80 backdrop-blur-lg my-8 p-4 
          w-10/12 sm:w-[512px] min-h-[328px] max-w-[512px]`}
         //  sm:w-2/3 sm:h-1/2 md:w-1/3 md:h-1/2
       >

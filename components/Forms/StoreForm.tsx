@@ -1,7 +1,7 @@
 import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
-import { Input } from "@/components";
+import { Dropzone, Input } from "@/components";
 
 type Props = {
   handleAdd: any;
@@ -19,41 +19,31 @@ const schema = Yup.object().shape({
 
 const StoreForm = (props: Props) => {
   const [errorsResponse, setErrorsResponse] = useState([]);
-  if (errorsResponse)
-    setTimeout(() => {
-      setErrorsResponse([]);
-    }, 10000);
+
   return (
     <Formik
       initialValues={props.initialValues}
-      // enableReinitialize={true}
+      enableReinitialize={true}
       validationSchema={schema}
       onSubmit={async (values, {}) => {
-        props.isEdit === 0
+        props.isEdit <= 0
           ? props
               .handleAdd(values)
               .catch(
                 (err: any) =>
-                  err.response && setErrorsResponse(err.response.data.errors)
+                  err.response && setErrorsResponse(err.response.data.message)
               )
           : props
               .handleUpdate(props.isEdit, values)
               .catch(
                 (err: any) =>
-                  err.response && setErrorsResponse(err.response.data.errors)
+                  err.response && setErrorsResponse(err.response.data.message)
               );
       }}
     >
-      {({ errors, isValid }) => (
+      {({ errors, isValid, setFieldValue, values }) => (
         <Form className="flex flex-col justify-center items-stretch gap-4 ">
-          {errorsResponse &&
-            errorsResponse.map((err: any, index: number) => {
-              return (
-                <span key={index} className="text-red-500">
-                  {err.message}
-                </span>
-              );
-            })}
+          <span className="text-red-500">{errorsResponse}</span>
 
           <Input
             errors={errors.name}
@@ -63,6 +53,13 @@ const StoreForm = (props: Props) => {
             placeholder="e.g Toko Bangunan"
           />
 
+          <Dropzone
+            value={values.image}
+            label={"Store Image"}
+            name="image"
+            errors={errors.image}
+            setFieldValue={setFieldValue}
+          />
           <button
             type="submit"
             disabled={!isValid}

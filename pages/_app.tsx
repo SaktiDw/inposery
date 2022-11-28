@@ -7,9 +7,9 @@ import { SWRConfig } from "swr";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <SWRConfig>
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
+      {/* <AuthProvider> */}
+      <Component {...pageProps} />
+      {/* </AuthProvider> */}
     </SWRConfig>
   );
 }

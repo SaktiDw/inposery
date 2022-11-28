@@ -9,14 +9,15 @@ import {
   TransactionForm,
 } from "@/components/index";
 import { TableColumn } from "@/components/Tables/Table";
-import { useAuth } from "@/helper/context/AuthContext";
+
 import useToggle from "@/helper/hooks/useToggle";
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import useSWR from "swr";
 import qs from "qs";
 import Swal from "sweetalert2";
+import useAuth from "@/helper/hooks/useAuth";
 
 type Props = {};
 
@@ -38,21 +39,8 @@ const Transaction = (props: Props) => {
 
   const query = qs.stringify(
     {
-      populate: "product",
-      where: {
-        _and: [
-          {
-            // type: "IN",
-            product: {
-              name: {
-                _like: `%${search}%`,
-              },
-              store: storeId,
-            },
-          },
-        ],
-      },
-      perPage,
+      filter: { "product.name": `${search}`, store_id: storeId },
+      limit: perPage,
       page: pageIndex,
     },
     { encodeValuesOnly: true }
@@ -62,7 +50,7 @@ const Transaction = (props: Props) => {
     error,
     mutate,
   } = useSWR(`/api/transactions?${query}`, (url) =>
-    axiosInstance.get(url).then((res) => res.data)
+    axios.get(url).then((res) => res.data)
   );
   const [selected, setSelected] = useState<Selected[]>([]);
 
@@ -90,42 +78,47 @@ const Transaction = (props: Props) => {
     { title: "Quantity", key: "qty" },
     { title: "Type", key: "type" },
     {
-      title: "Action",
-      key: "id",
-      render: (val) => (
-        <div className="flex gap-4">
-          <button
-            className="text-pink-500 text-sm font-semibold"
-            onClick={() => handleDelete([val.id])}
-          >
-            <i className="fi-rr-trash"></i>
-          </button>
-          <button className="text-lime-500 text-sm font-semibold">
-            <i className="fi-rr-pencil"></i>
-          </button>
-          <button className="text-slate-500 text-sm font-semibold">
-            <i className="fi-rr-eye"></i>
-          </button>
-        </div>
-      ),
+      title: "Date",
+      key: "created_at",
+      render: (val) => new Date(val.created_at).toLocaleString(),
     },
+    // {
+    //   title: "Action",
+    //   key: "id",
+    //   render: (val) => (
+    //     <div className="flex gap-4">
+    //       <button
+    //         className="text-pink-500 text-sm font-semibold"
+    //         onClick={() => handleDelete([val.id])}
+    //       >
+    //         <i className="fi-rr-trash"></i>
+    //       </button>
+    //       <button className="text-lime-500 text-sm font-semibold">
+    //         <i className="fi-rr-pencil"></i>
+    //       </button>
+    //       <button className="text-slate-500 text-sm font-semibold">
+    //         <i className="fi-rr-eye"></i>
+    //       </button>
+    //     </div>
+    //   ),
+    // },
   ];
 
   const handleAdd = async (input: any) => {
-    const product = await axiosInstance
+    const product = await axios
       .get(`/api/products/${parseInt(input.product)}`)
       .then((res) => res.data.data);
 
     await mutate(
       async (products: any) =>
-        await axiosInstance.post("/api/transactions", input).then((res) => {
+        await axios.post("/api/transactions", input).then((res) => {
           Swal.fire(
             "Success!",
             `${res.data.data.qty} ${product.name} was added to inventory!`,
             "success"
           );
           res.status === 201 &&
-            axiosInstance.patch(`/api/products/${res.data.data.product}`, {
+            axios.patch(`/api/products/${res.data.data.product}`, {
               qty: parseInt(product.qty) + parseInt(res.data.data.qty),
             });
           // alert(JSON.stringify(res.data.data.id));
@@ -157,13 +150,11 @@ const Transaction = (props: Props) => {
         },
         { encodeValuesOnly: true }
       );
-      axiosInstance
-        .delete(`/api/transactions?${query}`)
-        .then((res) => res.data);
+      axios.delete(`/api/transactions?${query}`).then((res) => res.data);
       setSelected([]);
     } else {
       filteredData = products.data.filter((item: any) => item.id !== ids);
-      axiosInstance.delete(`/api/transactions/${ids}`).then((res) => res.data);
+      axios.delete(`/api/transactions/${ids}`).then((res) => res.data);
       setSelected(selected.filter((item) => item.id !== ids));
     }
     const options = {
@@ -182,7 +173,7 @@ const Transaction = (props: Props) => {
   //       (item: any) => !mustDelete.includes(item.id)
   //     );
   //     // mustDelete.map((item) => {
-  //     //   axiosInstance.patch(`/api/transactions/${item}`, { qty: 100, store: 19 });
+  //     //   axios.patch(`/api/transactions/${item}`, { qty: 100, store: 19 });
   //     // });
   //     const query = qs.stringify(
   //       {
@@ -201,12 +192,12 @@ const Transaction = (props: Props) => {
   //       { encodeValuesOnly: true }
   //     );
   //     alert(query);
-  //     // axiosInstance.delete(`/api/products?${query}`).then((res) => res.data);
+  //     // axios.delete(`/api/products?${query}`).then((res) => res.data);
   //     setSelected([]);
   //   }
   //   // else {
   //   //   filteredData = products.data.filter((item: any) => item.id !== ids);
-  //   //   axiosInstance.delete(`/api/products/${ids}`).then((res) => res.data);
+  //   //   axios.delete(`/api/products/${ids}`).then((res) => res.data);
   //   //   setSelected(selected.filter((item) => item.id !== ids));
   //   // }
   //   // const options = {
@@ -223,35 +214,14 @@ const Transaction = (props: Props) => {
         <div className="flex gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
           <SearchInput onChange={(e) => setSearch(e.target.value)} />
-          <button
-            className="ml-auto py-2 px-4 shadow-lg rounded-lg bg-gradient-to-tl from-red-700 to-pink-500 text-white"
-            onClick={() => handleDelete(selected)}
-          >
-            Delete Many
-          </button>
-
-          <button
-            className=" py-2 px-4 shadow-lg rounded-lg bg-gradient-to-tl from-green-700 to-lime-500 text-white "
-            onClick={toggler}
-          >
-            Add
-          </button>
         </div>
         {products && (
           <>
-            <Table
-              data={products}
-              columns={columns}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Pagination meta={products.meta} setPage={setPageIndex} />
+            <Table data={products} columns={columns} />
           </>
         )}
       </div>
-      <Modal isOpen={toggle} close={() => setToggle(false)}>
-        <TransactionForm mutation={handleAdd} storeId={storeId} />
-      </Modal>
+      {products && <Pagination data={products} setPage={setPageIndex} />}
     </StoreDashboard>
   );
 };

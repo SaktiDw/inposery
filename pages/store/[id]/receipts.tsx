@@ -6,7 +6,7 @@ import {
   StoreDashboard,
   Table,
 } from "@/components";
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import React, { useState } from "react";
 import useSWR from "swr";
 import qs from "qs";
@@ -21,24 +21,11 @@ const Receipts = (props: Props) => {
   const [pageIndex, setPageIndex] = useState(1);
   const [perPage, setPerPage] = useState("10");
   const [search, setSearch] = useState("");
-  const params = qs.stringify(
+  const query = qs.stringify(
     {
-      where: {
-        _and: [
-          {
-            store: storeId,
-          },
-        ],
-        _or: [
-          {
-            product: {
-              _like: `%${search}%`,
-            },
-          },
-        ],
-      },
+      filter: { store_id: storeId },
+      limit: perPage,
       page: pageIndex,
-      perPage: perPage,
     },
     { encodeValuesOnly: true }
   );
@@ -46,8 +33,8 @@ const Receipts = (props: Props) => {
     data: receipts,
     error,
     mutate,
-  } = useSWR(`/api/receipts?${params}`, (url) =>
-    axiosInstance.get(url).then((res) => res.data)
+  } = useSWR(`/api/receipts?${query}`, (url) =>
+    axios.get(url).then((res) => res.data)
   );
 
   const columns: TableColumn<any>[] = [
@@ -56,12 +43,12 @@ const Receipts = (props: Props) => {
       title: "Products",
       key: "id",
       render: (val) =>
-        JSON.parse(val.product).map((item: any) => {
+        JSON.parse(val.products).map((item: any) => {
           return (
             <>
               <div>Product: {item.name}</div>
               <div>qty: {item.orderQty}</div>
-              <PriceFormater price={item.sellPrice} />
+              <PriceFormater price={item.sell_price} />
             </>
           );
         }),
@@ -71,16 +58,22 @@ const Receipts = (props: Props) => {
       key: "id",
       render: (val) => (
         <>
-          <div>Payment: {val.payment}</div>
-          <div>Change: {val.change}</div>
-          <div>Total: {val.total}</div>
+          <div>
+            Payment: <PriceFormater price={val.payment} />
+          </div>
+          <div>
+            Change: <PriceFormater price={val.change} />
+          </div>
+          <div>
+            Total: <PriceFormater price={val.total} />
+          </div>
         </>
       ),
     },
     {
       title: "Date",
-      key: "createdAt",
-      render: (val) => new Date(val.createdAt).toString(),
+      key: "created_at",
+      render: (val) => new Date(val.created_at).toString(),
     },
   ];
   return (
@@ -92,8 +85,8 @@ const Receipts = (props: Props) => {
           <SearchInput onChange={(e) => setSearch(e.target.value)} />
         </div>
         <Table columns={columns} data={receipts} />
-        {receipts && <Pagination meta={receipts.meta} setPage={setPageIndex} />}
       </div>
+      {receipts && <Pagination data={receipts} setPage={setPageIndex} />}
     </StoreDashboard>
   );
 };

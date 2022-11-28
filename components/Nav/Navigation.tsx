@@ -1,6 +1,5 @@
-import { useAuth } from "@/helper/context/AuthContext";
-import axiosInstance from "@/helper/lib/client";
-import { destroyToken } from "@/helper/lib/token";
+import useAuth from "@/helper/hooks/useAuth";
+import axios from "@/helper/lib/axios";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import useSWR from "swr";
@@ -11,12 +10,15 @@ type Props = {
 };
 
 const Navigation = (props: Props) => {
-  // const { data, mutate } = useSWR("/api/me", (url) =>
-  //   axiosInstance.get(url).then((res) => res.data.data)
-  // );
+  const {
+    data: user,
+    error,
+    mutate,
+  } = useSWR("/api/user", (url) =>
+    axios.get(url).then((response: any) => response.data)
+  );
+  const { logout } = useAuth();
 
-  const { user, logout } = useAuth();
-  useEffect(() => {}, [user]);
   return (
     <nav className="fixed top-0 left-0 z-50 w-full px-6 py-3 flex items-center bg-slate-100 bg-opacity-50 backdrop-blur dark:bg-slate-900 dark:backdrop-blur-lg dark:bg-opacity-50">
       <button className="p-3" onClick={props.onClick}>
@@ -27,18 +29,19 @@ const Navigation = (props: Props) => {
       </span>
       <div className="flex gap-2 ml-auto">
         <>
-          {user && user.email ? (
+          {user && user ? (
             <span className="cursor-pointer" onClick={() => logout()}>
               {user.email}
             </span>
           ) : (
             <>
               <Link href={"/login"}>Login</Link>
-              <Link href={""}>Register</Link>
+              <Link href={"/register"}>Register</Link>
             </>
           )}
         </>
       </div>
+      {/* {JSON.stringify(user)} */}
     </nav>
   );
 };
@@ -46,7 +49,7 @@ const Navigation = (props: Props) => {
 export default Navigation;
 
 // export const getSeverSideProps = async (ctx: any) => {
-//   const res = await axiosInstance.get("/api/me", {
+//   const res = await axios.get("/api/me", {
 //     headers: {
 //       Authorization: `Bearer ${ctx.req.headers.cookie}`,
 //     },

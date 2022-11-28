@@ -1,4 +1,4 @@
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
@@ -10,6 +10,7 @@ import { TransactionType } from "@/helper/type/enum";
 type Props = {
   mutation: any;
   storeId: any;
+  productId: any;
 };
 const storeSchema = Yup.object().shape({
   type: Yup.string()
@@ -18,29 +19,13 @@ const storeSchema = Yup.object().shape({
     .required("Required"),
   qty: Yup.number().min(1).required("Required"),
   price: Yup.number().required("Required"),
+  discount: Yup.number().required("Required"),
   description: Yup.string().max(50),
-  product: Yup.string().required("Required"),
+  product_id: Yup.string().required("Required"),
+  store_id: Yup.string().required("Required"),
 });
 
-const ProductForm = (props: Props) => {
-  const query = qs.stringify(
-    {
-      where: {
-        _and: [
-          {
-            store: {
-              _eq: props.storeId,
-            },
-          },
-        ],
-      },
-      perPage: 10000,
-    },
-    { encodeValuesOnly: true }
-  );
-  const { data, error } = useSWR(`/api/products?${query}`, (url) =>
-    axiosInstance.get(url).then((res) => res.data.data)
-  );
+const TransactionForm = (props: Props) => {
   const [errorsResponse, setErrorsResponse] = useState([]);
   if (errorsResponse.length > 0)
     setTimeout(() => {
@@ -49,12 +34,15 @@ const ProductForm = (props: Props) => {
 
   return (
     <Formik
+      enableReinitialize={true}
       initialValues={{
         type: TransactionType.IN,
         qty: "",
         price: "",
         description: "",
-        product: "",
+        discount: "0",
+        product_id: props.productId,
+        store_id: props.storeId,
       }}
       validationSchema={storeSchema}
       onSubmit={async (values, { setSubmitting }) => {
@@ -62,41 +50,14 @@ const ProductForm = (props: Props) => {
           .mutation(values)
           .catch(
             (err: any) =>
-              err.response && setErrorsResponse(err.response.data.errors)
+              err.response && setErrorsResponse(err.response.data.message)
           );
       }}
     >
-      {({ isSubmitting, errors }) => (
+      {({ isValid, errors }) => (
         <Form className="flex flex-col justify-center items-stretch gap-4 ">
-          {errorsResponse &&
-            errorsResponse.map((err: any, index: any) => {
-              return (
-                <span key={index} className="text-red-500">
-                  {err.message}
-                </span>
-              );
-            })}
-          <Input
-            errors={errors.product}
-            label="Product"
-            name="product"
-            placeholder="Select Product"
-            type="select"
-            defaultValue="Select Product"
-          >
-            {data &&
-              data.map((item: any) => {
-                return (
-                  <option
-                    key={item.id}
-                    className="bg-white dark:bg-slate-800"
-                    value={item.id}
-                  >
-                    {item.name}
-                  </option>
-                );
-              })}
-          </Input>
+          <span className="text-red-500">{errorsResponse}</span>
+
           <Input
             errors={errors.qty}
             label="Product Quantity"
@@ -106,8 +67,15 @@ const ProductForm = (props: Props) => {
           />
           <Input
             errors={errors.price}
-            label="Product Price"
+            label="Product Purchase Price"
             name="price"
+            placeholder="e.g 2000"
+            type="number"
+          />
+          <Input
+            errors={errors.discount}
+            label="Product discount"
+            name="discount"
             placeholder="e.g 2000"
             type="number"
           />
@@ -121,8 +89,8 @@ const ProductForm = (props: Props) => {
 
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="bg-gradient-to-tl from-green-700 to-lime-500  disabled:bg-lime-50 font-semibold shadow-lg py-2 px-4 rounded-lg "
+            disabled={!isValid}
+            className="bg-gradient-to-tl from-green-700 to-lime-500 disabled:from-green-800 disabled:to-green-800 disabled:cursor-not-allowed font-semibold shadow-lg py-2 px-4 rounded-lg "
           >
             Submit
           </button>
@@ -132,4 +100,4 @@ const ProductForm = (props: Props) => {
   );
 };
 
-export default ProductForm;
+export default TransactionForm;

@@ -11,14 +11,3 @@ describe("Login Page Testing", () => {
     expect(container).toMatchSnapshot();
   });
 });
-
-// test("rendering and submitting a basic Formik form", async () => {
-//   const handleAdd = vitest.fn();
-//   const handleUpdate = vitest.fn();
-//   render(<Stores />);
-//   const user = userEvent.setup();
-
-//   await user.click(screen.getByRole("button", { name: /submit/i }));
-
-//   await waitFor(() => expect(handleAdd).toHaveBeenCalled());
-// });

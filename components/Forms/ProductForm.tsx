@@ -1,7 +1,10 @@
 import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
-import { Input } from "@/components";
+import { Dropzone, Input } from "@/components";
+import useSWR from "swr";
+import axios from "@/helper/lib/api";
+import { values } from "lodash";
 
 type Props = {
   handleAdd: any;
@@ -15,18 +18,24 @@ const schema = Yup.object().shape({
     .min(3, "Too Short!")
     .max(70, "Too Long!")
     .required("Required"),
-  sellPrice: Yup.number().required("Required"),
+  sell_price: Yup.number().required("Required"),
 });
 
 const ProductForm = (props: Props) => {
+  // const { data: categories } = useSWR("/api/categories?perPage=9999", (url) =>
+  //   axios.get(url).then((res) => res.data)
+  // );
+
   const [errorsResponse, setErrorsResponse] = useState([]);
   if (errorsResponse.length > 0)
     setTimeout(() => {
       setErrorsResponse([]);
     }, 10000);
+
   return (
     <Formik
       initialValues={props.initialValues}
+      enableReinitialize={true}
       validationSchema={schema}
       onSubmit={async (values, {}) => {
         props.isEdit === 0
@@ -34,27 +43,22 @@ const ProductForm = (props: Props) => {
               .handleAdd(values)
               .catch(
                 (err: any) =>
-                  err.response && setErrorsResponse(err.response.data.errors)
+                  err.response && setErrorsResponse(err.response.data.message)
               )
           : props
               .handleUpdate(props.isEdit, values)
               .catch(
                 (err: any) =>
-                  err.response && setErrorsResponse(err.response.data.errors)
+                  err.response && setErrorsResponse(err.response.data.message)
               );
       }}
     >
-      {({ isSubmitting, errors, isValid }) => (
+      {({ setFieldValue, values, errors, isValid }) => (
         <Form className="flex flex-col justify-center items-stretch gap-4 ">
-          {errorsResponse &&
-            errorsResponse.map((err: any, index: any) => {
-              return (
-                <span key={index} className="text-red-500">
-                  {err.message}
-                </span>
-              );
-            })}
+          <span className="text-red-500">{errorsResponse}</span>
+
           <Input
+            defaultValue={props.initialValues.name}
             errors={errors.name}
             label="Product Name"
             name="name"
@@ -62,13 +66,20 @@ const ProductForm = (props: Props) => {
             type="text"
           />
           <Input
-            errors={errors.sellPrice}
+            defaultValue={props.initialValues.sell_price}
+            errors={errors.sell_price}
             label="Product Sell Price"
-            name="sellPrice"
+            name="sell_price"
             placeholder="e.g 2000"
             type="number"
           />
-
+          <Dropzone
+            value={values.image}
+            label={"Store Image"}
+            name="image"
+            errors={errors.image}
+            setFieldValue={setFieldValue}
+          />
           <button
             type="submit"
             disabled={!isValid}
@@ -76,6 +87,7 @@ const ProductForm = (props: Props) => {
           >
             Submit
           </button>
+          {JSON.stringify(props.initialValues)}
         </Form>
       )}
     </Formik>

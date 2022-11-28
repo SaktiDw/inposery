@@ -10,6 +10,7 @@ type Props = {
   placeholder: string;
   children?: React.ReactNode;
   defaultValue?: string;
+  multiple?: boolean;
 };
 
 const Input = (props: Props) => {
@@ -34,6 +35,7 @@ const Input = (props: Props) => {
           className={`py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md ${
             props.errors ? "ring-red-500" : "ring-lime-500"
           }`}
+          // defaultValue={props.defaultValue}
           // tabIndex={0}
           // autoFocus={true}
         />
@@ -51,6 +53,7 @@ const Input = (props: Props) => {
           }`}
           tabIndex={0}
           autoFocus={true}
+          multiple={props.multiple}
           // value=""
           // defaultValue={props.defaultValue}
         >
@@ -59,6 +62,7 @@ const Input = (props: Props) => {
         </Field>
       )}
       <ErrorMessage
+        key={props.errors}
         name={props.name}
         component="span"
         className="text-red-500"

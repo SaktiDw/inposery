@@ -1,8 +1,4 @@
-import { useAuth } from "@/helper/context/AuthContext";
-
-import axiosInstance from "@/helper/lib/client";
-
-import axios, { AxiosError } from "axios";
+import axios from "@/helper/lib/api";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -19,18 +15,25 @@ import {
 import useToggle from "@/helper/hooks/useToggle";
 import Swal from "sweetalert2";
 import qs from "qs";
+import useAuth from "@/helper/hooks/useAuth";
 
 type Props = {
   // res: any;
 };
 
+let user = {
+  name: "Some User",
+};
+
 const Stores = (props: Props) => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth({ middleware: "auth" });
+
   const { toggle, toggler, setToggle } = useToggle();
   const [isEdit, setIsEdit] = useState(0);
   const defaultValues = {
     name: "",
-    user: user.id,
+    user: user?.id,
+    image: "",
   };
   const [initialValues, setInitialValues] = useState(defaultValues);
   const [perPage, setPerPage] = useState("10");
@@ -39,46 +42,30 @@ const Stores = (props: Props) => {
 
   const query = qs.stringify(
     {
-      where: {
-        _and: [
-          {
-            user: user.id,
-            name: {
-              _like: `%${search}%`,
-            },
-          },
-        ],
-      },
-      perPage,
+      filter: { name: `${search}` },
+      limit: perPage,
       page: pageIndex,
     },
     { encodeValuesOnly: true }
   );
   const { data: stores, mutate } = useSWR(
     `/api/stores?${query}`,
-    async (url) => await axiosInstance.get(url).then((res) => res.data)
+    async (url) => await axios.get(url).then((res) => res.data)
   );
-
+  const pagination = stores?.links.filter(
+    (item: any) => typeof parseInt(item.label) === "number"
+  );
   const handleAdd = async (input: any) => {
-    await mutate(
-      async (stores: any) =>
-        await axiosInstance.post("/api/stores", input).then((res) => {
-          Swal.fire(
-            "Success!",
-            `${res.data.data.name} was created!`,
-            "success"
-          );
-          setToggle(false);
-          setInitialValues(defaultValues);
-          const newData = stores;
-          stores.data = [...stores, res.data];
-          return newData;
-        })
-    );
-    setToggle(false);
-    setInitialValues(defaultValues);
-    setIsEdit(0);
-    return;
+    await mutate(async (stores: any) => {
+      await axios.post("/api/stores", input).then((res) => {
+        Swal.fire("Success!", `${res.data.message}`, "success");
+        setToggle(false);
+        setInitialValues(defaultValues);
+        const newData = stores;
+        stores.data = [...stores, res.data];
+        return newData;
+      });
+    });
   };
 
   const handleDelete = async (id: number) => {
@@ -88,12 +75,10 @@ const Stores = (props: Props) => {
       rollbackOnError: true,
       revalidate: false,
     };
-    mutate({ ...stores, data: filteredData }, options);
-    await axiosInstance
+    await mutate({ ...stores, data: filteredData }, options);
+    await axios
       .delete(`/api/stores/${id}`)
-      .then((res) =>
-        Swal.fire("Success!", `${res.data.data.name} was deleted!`, "success")
-      );
+      .then((res) => Swal.fire("Success!", `${res.data.message}`, "success"));
   };
 
   const handleEdit = (store: any) => {
@@ -101,7 +86,8 @@ const Stores = (props: Props) => {
     setIsEdit(store.id);
     setInitialValues({
       name: store.name,
-      user: user.id,
+      user: store.user_id,
+      image: "",
     });
   };
 
@@ -110,8 +96,8 @@ const Stores = (props: Props) => {
     filteredData = stores.data.findIndex((item: any) => item.id === id);
 
     await mutate(async (stores: any) => {
-      await axiosInstance.patch(`/api/stores/${id}`, input).then((res) => {
-        Swal.fire("Success!", `${res.data.data.name} was updated!`, "success");
+      await axios.put(`/api/stores/${id}`, input).then((res) => {
+        Swal.fire("Success!", `${res.data.message}`, "success");
         const updatedData = stores;
         updatedData.data[filteredData] = res.data;
         return updatedData;
@@ -144,7 +130,7 @@ const Stores = (props: Props) => {
         }}
       >
         <StoreForm
-          key={initialValues.name}
+          key={isEdit}
           handleAdd={handleAdd}
           handleUpdate={handleUpdate}
           isEdit={isEdit}
@@ -164,8 +150,7 @@ const Stores = (props: Props) => {
             );
           })}
       </div>
-
-      {stores && <Pagination meta={stores.meta} setPage={setPageIndex} />}
+      {stores && <Pagination data={stores} setPage={setPageIndex} />}
     </Dashboard>
   );
 };

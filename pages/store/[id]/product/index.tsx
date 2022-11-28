@@ -7,17 +7,19 @@ import {
   SearchInput,
   StoreDashboard,
   Table,
+  TransactionForm,
 } from "@/components/index";
 import { TableColumn } from "@/components/Tables/Table";
-import { useAuth } from "@/helper/context/AuthContext";
+
 import useToggle from "@/helper/hooks/useToggle";
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import useSWR from "swr";
 import qs from "qs";
 import Link from "next/link";
+import useAuth from "@/helper/hooks/useAuth";
 type Props = {};
 
 type Selected = {
@@ -31,6 +33,11 @@ const Products = (props: Props) => {
   const { user } = useAuth();
 
   const { toggle, toggler, setToggle } = useToggle();
+  const {
+    toggle: modal,
+    toggler: modalToggler,
+    setToggle: setModalToggle,
+  } = useToggle();
 
   const [perPage, setPerPage] = useState("10");
   const [search, setSearch] = useState("");
@@ -38,20 +45,8 @@ const Products = (props: Props) => {
 
   const query = qs.stringify(
     {
-      where: {
-        _and: [
-          {
-            store: {
-              id: storeId,
-              user: user.id,
-            },
-            name: {
-              _like: `%${search}%`,
-            },
-          },
-        ],
-      },
-      perPage,
+      filter: { name: `${search}`, store_id: storeId },
+      limit: perPage,
       page: pageIndex,
     },
     { encodeValuesOnly: true }
@@ -62,7 +57,7 @@ const Products = (props: Props) => {
     error,
     mutate,
   } = useSWR(`/api/products?${query}`, (url) =>
-    axiosInstance.get(url).then((res) => res.data)
+    axios.get(url).then((res) => res.data)
   );
   const [selected, setSelected] = useState<Selected[]>([]);
   const columns: TableColumn<any>[] = [
@@ -70,8 +65,8 @@ const Products = (props: Props) => {
     { title: "Name", key: "name" },
     {
       title: "Price",
-      key: "sellPrice",
-      render: (val) => <PriceFormater price={val.sellPrice} />,
+      key: "sell_price",
+      render: (val) => <PriceFormater price={val.sell_price} />,
     },
     { title: "Quantity", key: "qty" },
     {
@@ -91,8 +86,11 @@ const Products = (props: Props) => {
           >
             <i className="fi-rr-pencil"></i>
           </button>
-          <button className="text-slate-500 text-sm font-semibold">
-            <i className="fi-rr-eye"></i>
+          <button
+            onClick={() => handleAddStockModal(val)}
+            className="text-blue-500 text-sm font-semibold"
+          >
+            <i className="fi-rr-plus"></i>
           </button>
         </div>
       ),
@@ -100,18 +98,22 @@ const Products = (props: Props) => {
   ];
   const defaultValue = {
     name: "",
-    sellPrice: "",
-    store: "",
+    sell_price: "",
+    store_id: "",
+    image: "",
   };
   const [initialValues, setInitialValues] = useState(defaultValue);
-  const [isEdit, setIsEdit] = useState(0);
+  const [productId, setproductId] = useState(0);
 
   const handleAdd = async (input: any) => {
-    input.store = storeId;
+    input.store_id = storeId;
     await mutate(
       async (products: any) =>
-        await axiosInstance.post("/api/products", input).then((res) => {
-          Swal.fire("Success!", `${res.data.data.name} was added!`, "success");
+        await axios.post("/api/products", input).then((res) => {
+          Swal.fire("Success!", `${res.data.message}`, "success");
+          setInitialValues(defaultValue);
+          setToggle(false);
+          setproductId(0);
           const newData = products;
           newData.data = [...products, res.data];
           return newData;
@@ -127,31 +129,25 @@ const Products = (props: Props) => {
       revalidate: false,
     };
     if (typeof ids !== "number" && ids.length !== 0) {
-      let mustDelete = selected.map((item) => item.selected && item.id);
+      let mustDelete = selected
+        .filter((item) => item !== null)
+        .filter((item) => item.selected)
+        .map((item) => item.id);
       filteredData = products.data.filter(
         (item: any) => !mustDelete.includes(item.id)
       );
-      const query = qs.stringify(
-        {
-          where: {
-            _or: [
-              {
-                id: {
-                  _in: mustDelete,
-                },
-              },
-            ],
-          },
-        },
-        { encodeValuesOnly: true }
-      );
-      axiosInstance.delete(`/api/products?${query}`).then((res) => res.data);
+
+      axios
+        .delete(`/api/products/${mustDelete}`)
+        .then((res) => Swal.fire("Success!", `${res.data.message}`, "success"));
       setSelected([]);
       mutate({ ...products, data: filteredData }, options);
     }
     if (typeof ids == "number") {
       filteredData = products.data.filter((item: any) => item.id !== ids);
-      axiosInstance.delete(`/api/products/${ids}`).then((res) => res.data);
+      axios
+        .delete(`/api/products/${ids}`)
+        .then((res) => Swal.fire("Success!", `${res.data.message}`, "success"));
       setSelected(selected.filter((item) => item.id !== ids));
       mutate({ ...products, data: filteredData }, options);
     }
@@ -159,28 +155,64 @@ const Products = (props: Props) => {
   };
   const handleEdit = (product: any) => {
     setToggle(true);
-    setIsEdit(product.id);
+    setproductId(product.id);
     setInitialValues({
       name: product.name,
-      sellPrice: product.sellPrice,
-      store: product.store,
+      sell_price: product.sell_price,
+      store_id: product.store_id,
+      image: "",
     });
   };
   const handleUpdate = async (id: any, input: any) => {
     let filteredData: string | number;
     filteredData = products.data.findIndex((item: any) => item.id === id);
-
-    await mutate(async (products: any) => {
-      await axiosInstance.patch(`/api/products/${id}`, input).then((res) => {
-        Swal.fire("Success!", `${res.data.data.name} was updated!`, "success");
+    const options = {
+      optimisticData: products,
+      rollbackOnError: true,
+      revalidate: false,
+    };
+    return await mutate(async (products: any) => {
+      return await axios.patch(`/api/products/${id}`, input).then((res) => {
+        Swal.fire("Success!", `${res.data.message}`, "success");
+        setToggle(false);
+        setInitialValues(defaultValue);
+        setproductId(0);
         const updatedData = products;
-        updatedData.data[filteredData] = res.data;
+        updatedData.data[filteredData] = res.data.data;
         return updatedData;
       });
+    }, options);
+  };
+  const handleAddStockModal = (product: any) => {
+    setModalToggle(true);
+    setproductId(product.id);
+  };
+  const handleAddStock = async (input: any) => {
+    // const product = await axios
+    //   .get(`/api/products/${parseInt(input.product)}`)
+    //   .then((res) => res.data.data);
+
+    return await axios.post("/api/transactions", input).then((res) => {
+      Swal.fire("Success!", `${res.data.message}`, "success");
+      mutate();
+      setModalToggle(false);
+      setproductId(0);
+      // res.status === 201 &&
+      //   axios
+      //     .patch(`/api/products/${res.data.data.product}`, {
+      //       qty: parseInt(product.qty) + parseInt(res.data.data.qty),
+      //     })
+      //     .then((res) => {
+      //       const filteredData = products.data.findIndex(
+      //         (item: any) => item.id === res.data.id
+      //       );
+      //       mutate(async (products: any) => {
+      //         const updatedData = products;
+      //         updatedData.data[filteredData] = res.data;
+      //         return updatedData;
+      //       });
+      //     });
     });
-    setToggle(false);
-    setInitialValues(defaultValue);
-    setIsEdit(0);
   };
 
   return (
@@ -211,29 +243,33 @@ const Products = (props: Props) => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Pagination meta={products.meta} setPage={setPageIndex} />
           </>
         )}
       </div>
+      {products && <Pagination data={products} setPage={setPageIndex} />}
       <Modal
         isOpen={toggle}
         close={() => {
           setToggle(false);
-          setInitialValues({ name: "", sellPrice: "", store: "" });
-          setIsEdit(0);
+          setInitialValues(defaultValue);
+          setproductId(0);
         }}
       >
         <ProductForm
           handleAdd={handleAdd}
           handleUpdate={handleUpdate}
-          isEdit={isEdit}
-          key={isEdit}
+          isEdit={productId}
+          key={productId}
           initialValues={initialValues}
         />
       </Modal>
-
-      {/* {JSON.stringify(selected, null, 2)} */}
-      {/* {JSON.stringify(u, null, 2)} */}
+      <Modal isOpen={modal} close={() => setModalToggle(false)}>
+        <TransactionForm
+          mutation={handleAddStock}
+          storeId={storeId}
+          productId={productId}
+        />
+      </Modal>
     </StoreDashboard>
   );
 };

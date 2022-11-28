@@ -1,4 +1,4 @@
-import { useAuth } from "@/helper/context/AuthContext";
+import useAuth from "@/helper/hooks/useAuth";
 import React from "react";
 import { Dashboard } from "../components";
 

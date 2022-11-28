@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { Input, OrderCard, PriceFormater } from "@/components";
-import axiosInstance from "@/helper/lib/client";
+import axios from "@/helper/lib/api";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import useToggle from "@/helper/hooks/useToggle";
 import Swal from "sweetalert2";
 import { TransactionType } from "@/helper/type/enum";
+import { values } from "lodash";
 
 type Props = {
   cart: any;
@@ -15,13 +16,14 @@ type Props = {
 };
 
 function CashierForm(props: Props) {
-  const { toggle, toggler } = useToggle();
-
   const subTotal =
     props.cart.length > 0
       ? props.cart.reduce(
-          (accumulator: any, item: { orderQty: number; sellPrice: number }) => {
-            return accumulator + item.orderQty * item.sellPrice;
+          (
+            accumulator: any,
+            item: { orderQty: number; sell_price: number }
+          ) => {
+            return accumulator + item.orderQty * item.sell_price;
           },
           0
         )
@@ -86,14 +88,9 @@ function CashierForm(props: Props) {
               );
             })}
         </ul>
-        <div className="flex items-end gap-2 mt-auto">
-          <label htmlFor="" className="font-semibold">
-            Sub Total :
-          </label>
-          <PriceFormater price={subTotal} className="text-lg font-bold" />
-        </div>
+
         <Formik
-          initialValues={{ payment: 0, product: JSON.stringify(props.cart) }}
+          initialValues={{ payment: "", product: JSON.stringify(props.cart) }}
           enableReinitialize={true}
           validationSchema={Yup.object().shape({
             payment: Yup.number()
@@ -103,28 +100,25 @@ function CashierForm(props: Props) {
           })}
           onSubmit={async (values, {}) => {
             if (values.product === "[]") return;
+
             props.cart.map(async (item: any) => {
-              await axiosInstance
-                .post("/api/transactions", {
-                  type: TransactionType.OUT,
-                  qty: item.orderQty,
-                  price: item.sellPrice,
-                  product: item.id,
-                  description: "",
-                })
-                .then((res) => {
-                  axiosInstance.patch(`/api/products/${item.id}`, {
-                    qty: item.qty - item.orderQty,
-                  });
-                });
+              await axios.post("/api/transactions", {
+                type: TransactionType.OUT,
+                qty: item.orderQty,
+                price: item.sell_price,
+                product_id: item.id,
+                store_id: props.storeId,
+                description: "-",
+                discount: 0,
+              });
             }),
               subTotal;
-            await axiosInstance.post("/api/receipts", {
-              store: props.storeId,
-              product: JSON.stringify(props.cart),
+            await axios.post("/api/receipts", {
+              store_id: props.storeId,
+              products: JSON.stringify(props.cart),
               total: subTotal,
               payment: values.payment,
-              change: values.payment - subTotal,
+              change: parseInt(values.payment) - subTotal,
               discount: 0,
             });
             props.setCart([]);
@@ -132,8 +126,14 @@ function CashierForm(props: Props) {
             Swal.fire("Success!", `Transaksi berhasil!`, "success");
           }}
         >
-          {({ errors, isValid }) => (
+          {({ errors, isValid, values }) => (
             <Form className="flex flex-col gap-2">
+              <div className="flex items-end gap-2 mt-auto">
+                <label htmlFor="" className="font-semibold">
+                  Sub Total :
+                </label>
+                <PriceFormater price={subTotal} className="text-lg font-bold" />
+              </div>
               <Input
                 label="Payment :"
                 errors={errors.payment}
@@ -141,6 +141,17 @@ function CashierForm(props: Props) {
                 type="number"
                 name="payment"
               />
+              {isValid && parseInt(values.payment) > 0 && (
+                <div className="flex items-end gap-2 mt-auto">
+                  <label htmlFor="" className="font-semibold">
+                    Change :
+                  </label>
+                  <PriceFormater
+                    price={parseInt(values.payment) - subTotal}
+                    className="text-lg font-bold"
+                  />
+                </div>
+              )}
               <button
                 disabled={!isValid}
                 className="w-full bg-gradient-to-tl from-green-700 to-lime-500 disabled:bg-gradient-to-tl disabled:from-green-900 disabled:to-lime-700 disabled:cursor-not-allowed py-2 px-4 rounded-lg shadow-lg"

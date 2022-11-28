@@ -15,7 +15,7 @@ const OrderCard = (props: Props) => {
     <>
       <li className="bg-white dark:bg-slate-800 py-2 px-4 rounded-xl flex flex-col gap-2 relative shadow-md">
         <button
-          className="bg-red-500 accent-current rounded-full absolute top-0 right-0 w-6 h-6 m-1"
+          className="bg-red-500 accent-current rounded-full absolute top-0 right-0 w-5 h-5 m-1 flex items-center justify-center"
           onClick={() => props.onDelete(props.index)}
         >
           <i className="fi-rr-cross-small"></i>
@@ -23,17 +23,17 @@ const OrderCard = (props: Props) => {
         <span className="truncate text-slate-500">{props.data.name}</span>
         <div className="flex justify-between items-center">
           <PriceFormater
-            price={props.data.sellPrice}
+            price={props.data.sell_price}
             className="text-lg font-semibold"
           />
           <div className="flex gap-2">
             <button
-              className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-500 w-8 h-8 rounded-lg"
+              className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-500 w-8 h-8 rounded-lg "
               onClick={() =>
                 props.onUpdate(props.index, props.data.orderQty - 1)
               }
             >
-              <i className="fi-rr-minus-small"></i>
+              <i className="flex items-center justify-center fi-rr-minus-small"></i>
             </button>
             <Formik
               initialValues={{ orderQty: props.data.orderQty }}
@@ -48,7 +48,7 @@ const OrderCard = (props: Props) => {
                   .required("Required"),
               })}
             >
-              {({ handleChange }) => (
+              {() => (
                 <Form className="flex flex-col justify-center items-end gap-4 relative">
                   <Field
                     type="number"
@@ -64,13 +64,13 @@ const OrderCard = (props: Props) => {
               )}
             </Formik>
             <button
-              className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-500 w-8 h-8 rounded-lg"
+              className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-500 w-8 h-8 rounded-lg "
               onClick={() =>
                 props.data.orderQty < props.data.qty &&
                 props.onUpdate(props.index, props.data.orderQty + 1)
               }
             >
-              <i className="fi-rr-plus-small"></i>
+              <i className="flex items-center justify-center fi-rr-plus-small"></i>
             </button>
           </div>
         </div>

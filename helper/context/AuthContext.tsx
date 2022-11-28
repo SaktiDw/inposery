@@ -1,7 +1,6 @@
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useState, createContext, useContext, useEffect } from "react";
-import axiosInstance from "../lib/client";
+import axios from "../lib/api";
 
 import {
   destroyToken,
@@ -21,7 +20,7 @@ type ContextType = {
 
 const defaultValue: ContextType = {
   user: {
-    id: 1,
+    id: 0,
     roles: [],
     email: "",
     blocked: false,
@@ -39,7 +38,7 @@ const defaultValue: ContextType = {
 
 export const AuthContext = createContext(defaultValue);
 
-export const useAuth = () => useContext(AuthContext);
+// export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -77,7 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     async function loadUser() {
       const token = getAccessToken();
       if (token) {
-        await axiosInstance
+        await axios
           .get("/api/me")
           .then((res) => setUser(res.data.data))
           .catch((err) => err);

@@ -1,4 +1,4 @@
-import { useAuth } from "@/helper/context/AuthContext";
+import useAuth from "@/helper/hooks/useAuth";
 import { Navigation, Sidebar, SidebarItem } from "components";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -28,19 +28,19 @@ const Dashboard = (props: Props) => {
             active={router?.pathname == "/dashboard"}
             icon="fi-rr-apps"
           />
-          <SidebarItem
+          {/* <SidebarItem
             href="#"
             text="Employee"
             active={router?.pathname == "/Employee"}
             icon="fi-rr-users-alt"
-          />
+          /> */}
           <SidebarItem
             href="/store"
             text="Store"
             active={router?.pathname == "/store"}
             icon="fi-rr-store-alt"
           />
-          <SidebarItem
+          {/* <SidebarItem
             href="#"
             text="Billings"
             active={router?.pathname == "/Billings"}
@@ -57,7 +57,7 @@ const Dashboard = (props: Props) => {
             text="Test"
             active={router?.pathname == "/test"}
             icon="fi-rr-test-tube"
-          />
+          /> */}
         </Sidebar>
         <div
           className={`w-full h-screen pt-20 pb-10 px-8 overflow-y-auto scroll-smooth ${props.className}`}

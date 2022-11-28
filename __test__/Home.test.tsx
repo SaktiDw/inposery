@@ -21,6 +21,7 @@ describe("Page Render Testing", () => {
   it("Should be render Home Page", () => {
     const { container } = render(<Home />);
     expect(container).toBeDefined();
+    expect(container).toMatchSnapshot();
   });
   it("Should be render Login Page", () => {
     const { container } = render(<Login />);
