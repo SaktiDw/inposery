@@ -27,42 +27,48 @@ const MainDashboard = (props: Props) => {
     (url) => axios.get(url).then((res) => res.data)
   );
 
-  const Modal = getAllStoresTransaction
-    .map((item: any) =>
-      item.transaction
-        .filter((item: any) => item.type == TransactionType.IN)
-        .reduce(
-          (sum: number, record: any) => sum + record.qty * record.price,
-          0
-        )
-    )
-    .reduce((sum: number, record: any) => sum + record, 0);
-  const Sales = getAllStoresTransaction
-    .map((item: any) =>
-      item.transaction
-        .filter((item: any) => item.type == TransactionType.OUT)
-        .reduce(
-          (sum: number, record: any) => sum + record.qty * record.price,
-          0
-        )
-    )
-    .reduce((sum: number, record: any) => sum + record, 0);
+  const Modal =
+    getAllStoresTransaction &&
+    getAllStoresTransaction
+      .map((item: any) =>
+        item.transaction
+          .filter((item: any) => item.type == TransactionType.IN)
+          .reduce(
+            (sum: number, record: any) => sum + record.qty * record.price,
+            0
+          )
+      )
+      .reduce((sum: number, record: any) => sum + record, 0);
+  const Sales =
+    getAllStoresTransaction &&
+    getAllStoresTransaction
+      .map((item: any) =>
+        item.transaction
+          .filter((item: any) => item.type == TransactionType.OUT)
+          .reduce(
+            (sum: number, record: any) => sum + record.qty * record.price,
+            0
+          )
+      )
+      .reduce((sum: number, record: any) => sum + record, 0);
   const today = new Date();
-  const TodaysSales = getAllStoresTransaction
-    .map((item: any) =>
-      item.transaction
-        .filter(
-          (item: any) =>
-            item.type == TransactionType.OUT &&
-            new Date(item.created_at).getDate() == today.getDate()
-        )
-        .reduce(
-          (sum: number, record: any) => sum + record.qty * record.price,
-          0
-        )
-    )
-    .reduce((sum: number, record: any) => sum + record, 0);
-
+  const TodaysSales =
+    getAllStoresTransaction &&
+    getAllStoresTransaction
+      .map((item: any) =>
+        item.transaction
+          .filter(
+            (item: any) =>
+              item.type == TransactionType.OUT &&
+              new Date(item.created_at).getDate() == today.getDate()
+          )
+          .reduce(
+            (sum: number, record: any) => sum + record.qty * record.price,
+            0
+          )
+      )
+      .reduce((sum: number, record: any) => sum + record, 0);
+  if (!getAllStoresTransaction) return <>Loading...</>;
   return (
     <Dashboard>
       {/* <span>{JSON.stringify(user, null, 2)}</span>
