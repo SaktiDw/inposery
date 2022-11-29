@@ -34,7 +34,7 @@ const Store = (props: Props) => {
   // );
 
   // if (error && error.response.status === 404) router.push("/404");
-  if (!store) return <>Loading...</>;
+  if (!store) return <StoreDashboard>Loading...</StoreDashboard>;
 
   // const IN = (transaction: any) =>
   //   transaction &&
@@ -86,14 +86,14 @@ const Store = (props: Props) => {
 
   return (
     <StoreDashboard>
-      <div className="grid grid-flow-col items-center gap-4 overflow-x-auto pb-6">
+      <div className="grid grid-flow-col items-center gap-4 pb-6">
         <DashboardCard
           title="Total Profit"
           subtitle={Sales - Modal}
           type="pricing"
         />
         <DashboardCard title="Total Modal" subtitle={Modal} type="pricing" />
-        <DashboardCard title="Todal Sales" subtitle={Sales} type="pricing" />
+        <DashboardCard title="Total Sales" subtitle={Sales} type="pricing" />
         <DashboardCard
           title="Today's Sales"
           subtitle={TodaysSales}
@@ -113,8 +113,8 @@ const Store = (props: Props) => {
           title="Modal & Sales Comparation"
         />
         <div className="grid grid-flow-row gap-4">
-          <SalesChart storeId={storeId} />
-          <SalesChart storeId={storeId} />
+          <SalesChart storeId={storeId} type={TransactionType.IN} />
+          <SalesChart storeId={storeId} type={TransactionType.OUT} />
         </div>
       </div>
       {/* {JSON.stringify(Sales)}

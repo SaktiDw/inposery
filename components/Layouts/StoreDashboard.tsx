@@ -65,7 +65,7 @@ const StoreDashboard = ({ children }: { children: React.ReactNode }) => {
               icon="fi-rr-test-tube"
             /> */}
           </Sidebar>
-          <main className="flex flex-col w-full h-screen overflow-x-hidden overflow-y-auto pt-20 pb-4 px-8 relative">
+          <main className="flex flex-col gap-4 w-full min-h-screen h-full overflow-x-hidden overflow-y-auto pt-20 pb-4 px-8 relative">
             {children}
           </main>
         </div>

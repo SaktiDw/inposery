@@ -17,12 +17,12 @@ export default function useAuth({ middleware }: any = {}) {
     axios.get(url).then((response: any) => response.data)
   );
 
-  // const csrf = () => axios.get("/sanctum/csrf-cookie");
+  const csrf = () => axios.get("/sanctum/csrf-cookie");
 
   const login = async ({ setErrors, ...props }: any) => {
     setErrors([]);
 
-    // await csrf();
+    await csrf();
 
     axios
       .post("/api/login", props)
@@ -72,7 +72,7 @@ export default function useAuth({ middleware }: any = {}) {
 
   return {
     user,
-    // csrf,
+    csrf,
     login,
     register,
     logout,

@@ -87,7 +87,6 @@ const ProductForm = (props: Props) => {
           >
             Submit
           </button>
-          {JSON.stringify(props.initialValues)}
         </Form>
       )}
     </Formik>

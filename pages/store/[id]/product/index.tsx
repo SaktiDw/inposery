@@ -217,35 +217,32 @@ const Products = (props: Props) => {
 
   return (
     <StoreDashboard>
-      <div className="flex flex-col gap-4">
-        <div className="flex gap-4">
-          <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
-          <SearchInput onChange={(e) => setSearch(e.target.value)} />
-          <button
-            className="ml-auto py-2 px-4 shadow-lg rounded-lg bg-gradient-to-tl from-red-700 to-pink-500 text-white"
-            onClick={() => handleDelete(selected)}
-          >
-            Delete Many
-          </button>
+      <div className="flex gap-4">
+        <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
+        <SearchInput onChange={(e) => setSearch(e.target.value)} />
+        <button
+          className="ml-auto py-2 px-4 shadow-lg rounded-lg bg-gradient-to-tl from-red-700 to-pink-500 text-white"
+          onClick={() => handleDelete(selected)}
+        >
+          Delete Many
+        </button>
 
-          <button
-            className=" py-2 px-4 shadow-lg rounded-lg bg-gradient-to-tl from-green-700 to-lime-500 text-white "
-            onClick={toggler}
-          >
-            Add
-          </button>
-        </div>
-        {products && (
-          <>
-            <Table
-              data={products}
-              columns={columns}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          </>
-        )}
+        <button
+          className=" py-2 px-4 shadow-lg rounded-lg bg-gradient-to-tl from-green-700 to-lime-500 text-white "
+          onClick={toggler}
+        >
+          Add
+        </button>
       </div>
+      {products && (
+        <Table
+          data={products}
+          columns={columns}
+          selected={selected}
+          setSelected={setSelected}
+        />
+      )}
+
       {products && <Pagination data={products} setPage={setPageIndex} />}
       <Modal
         isOpen={toggle}

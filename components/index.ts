@@ -24,4 +24,5 @@ export { default as PriceFormater } from "./FormatText/PriceFormater";
 export { default as Receipts } from "./Print/Receipts";
 
 export { default as SalesChart } from "./Chart/SalesChart";
+export { default as DashboardChart } from "./Chart/DashboardChart";
 export { default as ComparationChart } from "./Chart/ComparationChart";

@@ -17,17 +17,21 @@ const Navigation = (props: Props) => {
   } = useSWR("/api/user", (url) =>
     axios.get(url).then((response: any) => response.data)
   );
+
   const { logout } = useAuth();
 
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full px-6 py-3 flex items-center bg-slate-100 bg-opacity-50 backdrop-blur dark:bg-slate-900 dark:backdrop-blur-lg dark:bg-opacity-50">
-      <button className="p-3" onClick={props.onClick}>
-        <i className="fi-rr-menu-burger"></i>
-      </button>
-      <span className="font-bold text-2xl">
-        In<span className="text-lime-500">POS</span>ery
-      </span>
-      <div className="flex gap-2 ml-auto">
+    <nav className="fixed top-0 left-0 z-50 w-full px-6 py-3 flex items-center justify-between bg-slate-100 bg-opacity-50 backdrop-blur dark:bg-slate-900 dark:backdrop-blur-lg dark:bg-opacity-50">
+      <div>
+        <button className="p-3" onClick={props.onClick}>
+          <i className="fi-rr-menu-burger"></i>
+        </button>
+        <span className="font-bold text-2xl">
+          In<span className="text-lime-500">POS</span>ery
+        </span>
+      </div>
+      <span className="text-lime-500 font-bold text-2xl">Store Name</span>
+      <div className="flex gap-2 ">
         <>
           {user && user ? (
             <span className="cursor-pointer" onClick={() => logout()}>

@@ -18,11 +18,12 @@ import { TransactionType } from "@/helper/type/enum";
 
 type Props = {
   storeId: any;
+  type: TransactionType;
 };
 
 const SalesChart = (props: Props) => {
   const { data: transactions } = useSWR(
-    `/api/transactions?filter[store_id]=${props.storeId}`,
+    `/api/transactions?filter[store_id]=${props.storeId}&limit=99999999`,
     (url) => axios.get(url).then((res) => res.data)
   );
 
@@ -42,18 +43,18 @@ const SalesChart = (props: Props) => {
       legend: {
         position: "top" as const,
       },
-      title: {
-        display: true,
-        text: "Chart.js Line Chart",
-      },
+      // title: {
+      //   display: true,
+      //   text: "Chart.js Line Chart",
+      // },
     },
   };
 
   var result =
     transactions &&
     _(transactions.data)
-      .filter((item: any) => item.type === TransactionType.OUT)
-      .groupBy((v) => moment(v.created_at).format("DD"))
+      .filter((item: any) => item.type === props.type)
+      .groupBy((v) => moment(v.created_at).format("LTS"))
       .mapValues((v) =>
         v.reduce((sum: any, record: any) => sum + record.qty * record.price, 0)
       )
@@ -68,8 +69,7 @@ const SalesChart = (props: Props) => {
         data: values,
         borderColor: "#84cc16",
         backgroundColor: "#15803d",
-        // borderColor: "rgb(255, 99, 132)",
-        // backgroundColor: "rgba(255, 99, 132, 0.5)",
+        tension: 0.3,
       },
     ],
   };
