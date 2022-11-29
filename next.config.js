@@ -4,7 +4,7 @@ const nextConfig = {
   swcMinify: true,
   images: {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    domains: ['localhost','inposery-backend.herokuapp.com','images.unsplash.com', '127.0.0.1'],
+    domains: ['localhost','inposery-api-production.up.railway.app','images.unsplash.com', '127.0.0.1'],
     formats: ["image/avif", "image/webp"]
   },
   env: {
