@@ -113,8 +113,16 @@ const Store = (props: Props) => {
           title="Modal & Sales Comparation"
         />
         <div className="grid grid-flow-row gap-4">
-          <SalesChart storeId={storeId} type={TransactionType.IN} />
-          <SalesChart storeId={storeId} type={TransactionType.OUT} />
+          <SalesChart
+            storeId={storeId}
+            title="Modal"
+            type={TransactionType.IN}
+          />
+          <SalesChart
+            storeId={storeId}
+            title="Sales"
+            type={TransactionType.OUT}
+          />
         </div>
       </div>
       {/* {JSON.stringify(Sales)}

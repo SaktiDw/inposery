@@ -1,114 +1,102 @@
-import { StoreDashboard } from "@/components";
+import {
+  Modal,
+  Pagination,
+  PerPageSelect,
+  ProductForm,
+  SearchInput,
+  StoreDashboard,
+  Table,
+  TransactionForm,
+} from "@/components/index";
+import { TableColumn } from "@/components/Tables/Table";
 
+import useToggle from "@/helper/hooks/useToggle";
 import axios from "@/helper/lib/api";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 import useSWR from "swr";
 import qs from "qs";
-import { TransactionType } from "@/helper/type/enum";
-import _ from "lodash";
-import moment from "moment";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import Swal from "sweetalert2";
 import useAuth from "@/helper/hooks/useAuth";
-import Image from "next/image";
 
 type Props = {};
 
-const Test = (props: Props) => {
-  // const { user } = useAuth();
-  // const params = qs.stringify({
-  //   where: {
-  //     _and: [
-  //       {
-  //         user: user?.id,
-  //       },
-  //     ],
-  //   },
-  //   populate: "products.transactions",
-  // });
-  // const { data: store, error } = useSWR(`/api/stores/16?${params}`, (url) =>
-  //   axios.get(url).then((res) => res.data)
-  // );
-  // const product1 =
-  //   store &&
-  //   store.data.products.map((item: any) =>
-  //     item.transactions.filter(
-  //       (item: any) =>
-  //         new Date(item.createdAt) <= new Date() &&
-  //         new Date(item.createdAt) >= new Date("2022-11-21T09:27:08.949Z")
-  //     )
-  //   );
+type Selected = {
+  selected: boolean;
+  id: number;
+};
 
-  // const { data: transactions } = useSWR(
-  //   `/api/transactions?where[store]=16`,
-  //   (url) => axios.get(url).then((res) => res.data)
-  // );
+const Transaction = (props: Props) => {
+  const router = useRouter();
+  const storeId = router.query.id;
 
-  // ChartJS.register(
-  //   CategoryScale,
-  //   LinearScale,
-  //   PointElement,
-  //   LineElement,
-  //   Title,
-  //   Tooltip,
-  //   Legend
-  // );
+  const [perPage, setPerPage] = useState("1000");
+  const [search, setSearch] = useState("");
+  const [pageIndex, setPageIndex] = useState(1);
 
-  // const options = {
-  //   responsive: true,
-  //   plugins: {
-  //     legend: {
-  //       position: "top" as const,
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: "Chart.js Line Chart",
-  //     },
-  //   },
-  // };
+  const query = qs.stringify(
+    {
+      filter: { "product.name": `${search}`, store_id: storeId },
+      limit: perPage,
+      page: pageIndex,
+    },
+    { encodeValuesOnly: true }
+  );
+  const {
+    data: products,
+    error,
+    mutate,
+  } = useSWR(`/api/test?${query}`, (url) =>
+    axios.get(url).then((res) => res.data)
+  );
+  const [selected, setSelected] = useState<Selected[]>([]);
 
-  // var result =
-  //   transactions &&
-  //   _(transactions.data)
-  //     .groupBy((v) => moment(v.createdAt).format("DD"))
-  //     .mapValues((v) =>
-  //       v.reduce((sum: any, record: any) => sum + record.qty * record.price, 0)
-  //     )
-  //     .value();
-  // const labels = Object.keys(result);
-  // const values = Object.values(result);
-  // const data = {
-  //   labels,
-  //   datasets: [
-  //     {
-  //       label: "Sales",
-  //       data: values,
-  //       borderColor: "rgb(255, 99, 132)",
-  //       backgroundColor: "rgba(255, 99, 132, 0.5)",
-  //     },
-  //   ],
-  // };
+  const columns: TableColumn<any>[] = [
+    { title: "#", key: "id", dataType: "numbering" },
+    {
+      title: "Name",
+      key: "product",
+      render(val, index) {
+        return val.product?.name;
+      },
+    },
+    {
+      title: "Price",
+      key: "price",
+      render: (val) => (
+        <div className="flex gap-4">
+          {val.price.toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          })}
+        </div>
+      ),
+    },
+    { title: "Quantity", key: "qty" },
+    { title: "Type", key: "type" },
+    {
+      title: "Date",
+      key: "created_at",
+      render: (val) => new Date(val.created_at).toLocaleString(),
+    },
+  ];
 
   return (
     <StoreDashboard>
-      {/* {JSON.stringify(result)}
-      <Line options={options} data={data} />; */}
-      <Image
-        src={"http://localhost:8000/storage/2/prLCIHoULyrPnx9Q.png"}
-        alt="http://localhost:8000/storage/2/prLCIHoULyrPnx9Q.png"
-        fill
-      />
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-4">
+          <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
+          <SearchInput onChange={(e) => setSearch(e.target.value)} />
+        </div>
+        {products && (
+          <>
+            <Table data={products} columns={columns} />
+          </>
+        )}
+      </div>
+      {products && <Pagination data={products} setPage={setPageIndex} />}
     </StoreDashboard>
   );
 };
 
-export default Test;
+export default Transaction;

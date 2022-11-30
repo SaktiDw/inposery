@@ -30,7 +30,7 @@ const Navigation = (props: Props) => {
           In<span className="text-lime-500">POS</span>ery
         </span>
       </div>
-      <span className="text-lime-500 font-bold text-2xl">Store Name</span>
+      {/* <span className="text-lime-500 font-bold text-2xl">Store Name</span> */}
       <div className="flex gap-2 ">
         <>
           {user && user ? (

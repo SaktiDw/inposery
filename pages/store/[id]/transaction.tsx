@@ -60,7 +60,7 @@ const Transaction = (props: Props) => {
       title: "Name",
       key: "product",
       render(val, index) {
-        return val.product.name;
+        return val.product?.name;
       },
     },
     {
