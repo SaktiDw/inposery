@@ -34,7 +34,7 @@ enum FilterBy {
 
 const SalesChart = (props: Props) => {
   const { data: transactions } = useSWR(
-    `/api/transactions?filter[store_id]=${props.storeId}&limit=99999999`,
+    `/api/transactions?page=1&limit=99999999`,
     (url) => axios.get(url).then((res) => res.data)
   );
   const [filterBy, setFilterBy] = useState<FilterBy>(FilterBy.lastSevenDays);
@@ -55,10 +55,6 @@ const SalesChart = (props: Props) => {
       legend: {
         position: "top" as const,
       },
-      // title: {
-      //   display: true,
-      //   text: "Chart.js Line Chart",
-      // },
     },
   };
 
@@ -107,7 +103,12 @@ const SalesChart = (props: Props) => {
       },
     ],
   };
-  if (!transactions) return <>Loading...</>;
+  if (!transactions)
+    return (
+      <div className="animate-pulse relative p-4 shadow-lg rounded-xl bg-white dark:bg-slate-800 flex justify-center items-center">
+        Loading...
+      </div>
+    );
 
   return (
     <div className="relative p-4 shadow-lg rounded-xl bg-white dark:bg-slate-800">

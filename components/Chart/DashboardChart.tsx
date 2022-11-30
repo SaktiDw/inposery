@@ -74,7 +74,7 @@ const DashboardChart = (props: Props) => {
       )
       .value();
   });
-  const labels = result && Object.keys(result[0]);
+  const labels = result && Object.keys(result);
   const values = result && Object.values(result);
   const data = {
     labels,

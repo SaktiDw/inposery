@@ -26,7 +26,7 @@ const Cashier = (props: Props) => {
 
   const query = qs.stringify(
     {
-      filter: { name: `${search}`, store_id: storeId },
+      filter: { name: `${search}`, store_id: storeId, qty: 0 },
       limit: perPage,
       page: pageIndex,
     },

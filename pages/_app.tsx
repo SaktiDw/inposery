@@ -6,10 +6,10 @@ import { SWRConfig } from "swr";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <SWRConfig>
-      {/* <AuthProvider> */}
-      <Component {...pageProps} />
-      {/* </AuthProvider> */}
-    </SWRConfig>
+    <Component {...pageProps} />
+    // <SWRConfig>
+    //   <AuthProvider>
+    //   </AuthProvider>
+    // </SWRConfig>
   );
 }

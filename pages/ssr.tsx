@@ -117,10 +117,11 @@ type Props = {
 const SSRTest = (props: Props) => {
   const router = useRouter();
   const storeId = router.query.id;
+  const params = router.query;
 
-  const [perPage, setPerPage] = useState("1000");
+  const [perPage, setPerPage] = useState<any>(params.limit || 10);
   const [search, setSearch] = useState("");
-  const [pageIndex, setPageIndex] = useState(1);
+  const [pageIndex, setPageIndex] = useState<any>(params.page || 1);
 
   if (!props.data) return <>Loading...</>;
 

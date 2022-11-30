@@ -23,10 +23,11 @@ type Selected = {
 const Transaction = (props: Props) => {
   const router = useRouter();
   const storeId = router.query.id;
+  const params = router.query;
 
-  const [perPage, setPerPage] = useState("1000");
+  const [perPage, setPerPage] = useState<any>(params.limit);
   const [search, setSearch] = useState("");
-  const [pageIndex, setPageIndex] = useState(1);
+  const [pageIndex, setPageIndex] = useState<any>(params.page);
 
   const query = qs.stringify(
     {

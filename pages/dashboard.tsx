@@ -68,23 +68,19 @@ const MainDashboard = (props: Props) => {
           )
       )
       .reduce((sum: number, record: any) => sum + record, 0);
-  const top =
-    getAllStoresTransaction &&
-    getAllStoresTransaction.map((item: any) =>
-      _(item.transaction)
-        .filter((item: any) => item.type == TransactionType.IN)
-        .groupBy((v) => v.product_id)
-        .map((item) =>
-          item.reduce((sum: number, record: any) => sum + record.qty, 0)
-        )
-    );
-  if (!getAllStoresTransaction) return <>Loading...</>;
+  // const top =
+  //   getAllStoresTransaction &&
+  //   getAllStoresTransaction.map((item: any) =>
+  //     _(item.transaction)
+  //       .filter((item: any) => item.type == TransactionType.IN)
+  //       .groupBy((v) => v.product_id)
+  //       .map((item) =>
+  //         item.reduce((sum: number, record: any) => sum + record.qty, 0)
+  //       )
+  //   );
+  if (!getAllStoresTransaction) return <Dashboard>Loading...</Dashboard>;
   return (
     <Dashboard>
-      {/* <span>{JSON.stringify(user, null, 2)}</span>
-      <span>{JSON.stringify(store, null, 2)}</span>
-      <span>{JSON.stringify(transactions, null, 2)}</span> */}
-      {/* <span>{JSON.stringify(store, null, 2)}</span> */}
       <div className="grid grid-flow-col items-center gap-4 pb-6">
         <DashboardCard
           title="Total Profit"
@@ -103,7 +99,6 @@ const MainDashboard = (props: Props) => {
         <DashboardChart storeId={storeId} type={TransactionType.IN} />
         <DashboardChart storeId={storeId} type={TransactionType.OUT} />
       </div>
-      {/* {JSON.stringify(top)} */}
     </Dashboard>
   );
 };

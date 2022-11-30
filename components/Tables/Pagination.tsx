@@ -9,7 +9,7 @@ type Props = {
 const Pagination = (props: Props) => {
   return (
     <>
-      <div className={`flex gap-2 mt-auto ${props.className}`}>
+      <div className={`flex flex-wrap gap-2 mt-auto ${props.className}`}>
         <button
           className="w-10 h-10 bg-white dark:bg-slate-800 dark:text-white shadow-md rounded-xl  hover:scale-110 transition-all ease-in-out duration-200 hover:shadow-xl"
           onClick={() =>
@@ -21,7 +21,7 @@ const Pagination = (props: Props) => {
         </button>
         {/* {Array(props.data.current_page)
           .fill(true) */}
-        {Array.from({ length: props.data.last_page }, (_, i) => i + 1).map(
+        {/* {Array.from({ length: props.data.last_page }, (_, i) => i + 1).map(
           (item) => (
             <button
               key={item}
@@ -35,6 +35,23 @@ const Pagination = (props: Props) => {
               {item}
             </button>
           )
+        )} */}
+        {props.data.links.map(
+          (item: any, index: number) =>
+            index > 0 &&
+            index < props.data.links.length - 1 && (
+              <button
+                key={item.label}
+                className={`w-10 h-10 text-xs dark:text-white shadow-md rounded-xl hover:scale-110 transition-all ease-in-out duration-200 hover:shadow-xl ${
+                  item.active
+                    ? `bg-gradient-to-tl from-green-700 to-lime-500 text-white`
+                    : `bg-white dark:bg-slate-800`
+                }`}
+                onClick={() => props.setPage(item.label)}
+              >
+                {item.label}
+              </button>
+            )
         )}
         <button
           className="w-10 h-10 bg-white dark:bg-slate-800 dark:text-white shadow-md rounded-xl hover:scale-110 transition-all ease-in-out duration-200 hover:shadow-xl"
