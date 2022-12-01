@@ -4,8 +4,8 @@ import OrderCard from "./OrderCard";
 
 describe("OrderCard", () => {
   const data = [
-    { id: 11, name: "Goodday", sellPrice: 6000, qty: 60, orderQty: 1 },
-    { id: 10, name: "Teh Kotak", sellPrice: 5000, qty: 70, orderQty: 1 },
+    { id: 11, name: "Goodday", sell_price: 6000, qty: 60, orderQty: 1 },
+    { id: 10, name: "Teh Kotak", sell_price: 5000, qty: 70, orderQty: 1 },
   ];
   it("should be rendered normal ", () => {
     const wrapper = render(

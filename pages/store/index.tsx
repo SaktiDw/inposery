@@ -26,7 +26,7 @@ let user = {
 };
 
 const Stores = (props: Props) => {
-  const { user, isLoading } = useAuth({ middleware: "auth" });
+  const { user, isLoading } = useAuth();
 
   const { toggle, toggler, setToggle } = useToggle();
   const [isEdit, setIsEdit] = useState(0);

@@ -12,6 +12,7 @@ import useSWR from "swr";
 import qs from "qs";
 import { useRouter } from "next/router";
 import useAuth from "@/helper/hooks/useAuth";
+import { Product } from "@/helper/type/Response";
 
 type Props = {};
 
@@ -26,7 +27,7 @@ const Cashier = (props: Props) => {
 
   const query = qs.stringify(
     {
-      filter: { name: `${search}`, store_id: storeId, qty: 0 },
+      filter: { name: `${search}`, store_id: storeId },
       limit: perPage,
       page: pageIndex,
     },
@@ -67,8 +68,8 @@ const Cashier = (props: Props) => {
         <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4">
           {products &&
             products.data
-              .filter((item: any) => item.qty > 0)
-              .map((item: any) => {
+              .filter((item: Product) => item.qty > 0)
+              .map((item: Product) => {
                 return (
                   <ProductCard
                     key={item.id}

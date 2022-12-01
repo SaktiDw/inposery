@@ -1,14 +1,11 @@
-import useToggle from "@/helper/hooks/useToggle";
-import axios from "@/helper/lib/api";
-import Link from "next/link";
 import React from "react";
-import { mutate } from "swr";
 import { PriceFormater } from "@/components";
 import Image from "next/image";
+import { Product } from "@/helper/type/Response";
 
 type Props = {
-  data?: any;
-  onClick?: () => void;
+  data: Product;
+  onClick: () => void;
 };
 
 const ProductCart = (props: Props) => {
@@ -18,22 +15,22 @@ const ProductCart = (props: Props) => {
       onClick={props.onClick}
     >
       <div className="relative bg-gradient-to-tl from-green-700 to-lime-500 p-2 leading-tight w-full h-[120px]">
-        {props.data.media[0] && (
+        {props.data?.media[0] && (
           <Image
             fill
             placeholder="blur"
-            blurDataURL={props.data.media[0]?.preview_url}
-            src={props.data.media[0]?.original_url}
-            alt={props.data.media[0]?.file_name}
+            blurDataURL={props.data?.media[0]?.preview_url}
+            src={props.data?.media[0]?.original_url}
+            alt={props.data?.media[0]?.file_name}
             className="object-cover w-full h-full"
           />
         )}
       </div>
       <div className="p-2 text-sm">
-        <div className="truncate text-slate-500">{props.data.name}</div>
+        <div className="truncate text-slate-500">{props.data?.name}</div>
         <div className="flex item-center justify-between font-semibold">
-          <PriceFormater price={props.data.sell_price} />
-          <span>{props.data.qty.toLocaleString()}</span>
+          <PriceFormater price={props.data?.sell_price || 0} />
+          <span>{props.data?.qty.toLocaleString()}</span>
         </div>
       </div>
     </div>

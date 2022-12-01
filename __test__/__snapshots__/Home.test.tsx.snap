@@ -6,28 +6,30 @@ exports[`Page Render Testing > Should be render Home Page 1`] = `
     class="w-full h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-white"
   >
     <nav
-      class="fixed top-0 left-0 z-50 w-full px-6 py-3 flex items-center bg-slate-100 bg-opacity-50 backdrop-blur dark:bg-slate-900 dark:backdrop-blur-lg dark:bg-opacity-50"
+      class="fixed top-0 left-0 z-50 w-full px-6 py-3 flex items-center justify-between bg-slate-100 bg-opacity-50 backdrop-blur dark:bg-slate-900 dark:backdrop-blur-lg dark:bg-opacity-50"
     >
-      <button
-        class="p-3"
-      >
-        <i
-          class="fi-rr-menu-burger"
-        />
-      </button>
-      <span
-        class="font-bold text-2xl"
-      >
-        In
-        <span
-          class="text-lime-500"
+      <div>
+        <button
+          class="p-3"
         >
-          POS
+          <i
+            class="fi-rr-menu-burger"
+          />
+        </button>
+        <span
+          class="font-bold text-2xl"
+        >
+          In
+          <span
+            class="text-lime-500"
+          >
+            POS
+          </span>
+          ery
         </span>
-        ery
-      </span>
+      </div>
       <div
-        class="flex gap-2 ml-auto"
+        class="flex gap-2 "
       >
         <a
           href="/login"
@@ -35,7 +37,7 @@ exports[`Page Render Testing > Should be render Home Page 1`] = `
           Login
         </a>
         <a
-          href="/"
+          href="/register"
         >
           Register
         </a>
@@ -47,6 +49,11 @@ exports[`Page Render Testing > Should be render Home Page 1`] = `
       Landing Page ♥
     </h1>
     landing-page
+    <a
+      href="/dashboard"
+    >
+      Get Started
+    </a>
   </main>
 </div>
 `;
