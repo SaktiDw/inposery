@@ -3,13 +3,12 @@ import React from "react";
 type Props = {
   data: any;
   setPage: React.Dispatch<React.SetStateAction<number>>;
-  className?: string;
 };
 
 const Pagination = (props: Props) => {
   return (
     <>
-      <div className={`flex flex-wrap gap-2 mt-auto ${props.className}`}>
+      <div className={`flex flex-wrap gap-2 mt-auto sm:mr-[300px]`}>
         <button
           className="w-10 h-10 bg-white dark:bg-slate-800 dark:text-white shadow-md rounded-xl  hover:scale-110 transition-all ease-in-out duration-200 hover:shadow-xl"
           onClick={() =>
