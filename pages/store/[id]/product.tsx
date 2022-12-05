@@ -1,9 +1,3 @@
-import useAuth from "@/helper/hooks/useAuth";
-import axios from "@/helper/lib/axios";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
-import useSWR from "swr";
-import qs from "qs";
 import {
   Modal,
   Pagination,
@@ -12,20 +6,27 @@ import {
   ProductForm,
   SearchInput,
   StoreDashboard,
-  Table,
   TransactionForm,
 } from "@/components";
+import Table, { TableColumn } from "@/components/Tables/Table";
+import useAuth from "@/helper/hooks/useAuth";
 import useToggle from "@/helper/hooks/useToggle";
-import Swal from "sweetalert2";
-import { TableColumn } from "@/components/Tables/Table";
-import { AxiosResponse } from "axios";
+import axios from "@/helper/lib/axios";
 import { Product, ProductInput, ProductResponse } from "@/helper/type/Product";
+import { AxiosResponse } from "axios";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import Swal from "sweetalert2";
+import useSWR from "swr";
+import qs from "qs";
+
 type Props = {};
+
 type Selected = {
   selected: boolean;
   id: number;
 };
-const product = (props: Props) => {
+const Products = (props: Props) => {
   const router = useRouter();
   const { id: storeId } = router.query;
   const { isLoading, user } = useAuth({ middleware: "auth" });
@@ -245,4 +246,4 @@ const product = (props: Props) => {
   );
 };
 
-export default product;
+export default Products;

@@ -11,7 +11,7 @@ import {
 import { AuthUser } from "../type/Auth";
 
 type ContextType = {
-  user: AuthUser;
+  user: any;
   login: ({}: any) => Promise<any>;
   logout: () => void;
   register: ({}: any) => Promise<any>;
