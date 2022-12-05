@@ -2,14 +2,16 @@ import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { Dropzone, Input } from "@/components";
-import useSWR from "swr";
-import axios from "@/helper/lib/api";
-import { values } from "lodash";
+import { ProductInput, ProductResponse } from "@/helper/type/Product";
+import SubmitButton from "../Buttons/SubmitButton";
 
 type Props = {
-  handleAdd: any;
-  handleUpdate: any;
-  initialValues?: any;
+  handleAdd: (input: ProductInput) => Promise<ProductResponse | undefined>;
+  handleUpdate: (
+    id: number,
+    input: ProductInput
+  ) => Promise<ProductResponse | undefined>;
+  initialValues: ProductInput;
   isEdit: number;
 };
 
@@ -53,7 +55,7 @@ const ProductForm = (props: Props) => {
               );
       }}
     >
-      {({ setFieldValue, values, errors, isValid }) => (
+      {({ setFieldValue, values, errors, isSubmitting }) => (
         <Form className="flex flex-col justify-center items-stretch gap-4 ">
           <span className="text-red-500">{errorsResponse}</span>
 
@@ -80,13 +82,10 @@ const ProductForm = (props: Props) => {
             errors={errors.image}
             setFieldValue={setFieldValue}
           />
-          <button
-            type="submit"
-            disabled={!isValid}
-            className="bg-gradient-to-tl from-green-700 to-lime-500 disabled:from-green-800 disabled:to-green-800 disabled:cursor-not-allowed font-semibold shadow-lg py-2 px-4 rounded-lg "
-          >
-            Submit
-          </button>
+          <SubmitButton
+            disabled={isSubmitting}
+            text={isSubmitting ? "Loading ..." : "Submit"}
+          />
         </Form>
       )}
     </Formik>

@@ -3,6 +3,8 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "../lib/axios";
+import { AuthInput, AuthUser, RegisterInput } from "../type/Auth";
+import { AxiosResponse } from "axios";
 
 export default function useAuth({ middleware }: any = {}) {
   const router = useRouter();
@@ -14,18 +16,18 @@ export default function useAuth({ middleware }: any = {}) {
     error,
     mutate,
   } = useSWR("/api/user", (url) =>
-    axios.get(url).then((response: any) => response.data)
+    axios.get(url).then((response: AxiosResponse<AuthUser>) => response.data)
   );
 
   const csrf = () => axios.get("/sanctum/csrf-cookie");
 
-  const login = async ({ setErrors, ...props }: any) => {
+  const login = async (setErrors: any, input: AuthInput) => {
     setErrors([]);
 
     await csrf();
 
     axios
-      .post("/api/login", props)
+      .post("/api/login", input)
       .then(() => {
         mutate();
         router.push("/dashboard");
@@ -37,13 +39,13 @@ export default function useAuth({ middleware }: any = {}) {
         setErrors({ message: error.response.data?.message });
       });
   };
-  const register = async ({ setErrors, ...props }: any) => {
+  const register = async (setErrors: any, input: RegisterInput) => {
     setErrors([]);
 
-    // await csrf();
+    await csrf();
 
     axios
-      .post("/api/register", props)
+      .post("/api/register", input)
       .then(() => mutate())
       .then(() => router.push("/"))
       .catch((error: any) => {
@@ -56,7 +58,7 @@ export default function useAuth({ middleware }: any = {}) {
   const logout = async () => {
     await axios.post("/api/logout");
 
-    mutate(null);
+    mutate(undefined);
 
     router.push("/login");
   };

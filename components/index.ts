@@ -22,7 +22,11 @@ export { default as Dropzone } from "./Inputs/Dropzone";
 
 export { default as PriceFormater } from "./FormatText/PriceFormater";
 export { default as Receipts } from "./Print/Receipts";
+export { default as Buttons } from "./Buttons/SubmitButton";
 
-export { default as SalesChart } from "./Chart/SalesChart";
+export { default as TransactionChart } from "./Chart/TransactionChart";
 export { default as DashboardChart } from "./Chart/DashboardChart";
 export { default as ComparationChart } from "./Chart/ComparationChart";
+export { default as TopProductChart } from "./Chart/TopProductChart";
+export { default as ModalSalesChart } from "./Chart/ModalSalesChart";
+export { default as FilterChart } from "./Chart/FilterChart";

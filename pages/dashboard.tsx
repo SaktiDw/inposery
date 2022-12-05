@@ -11,23 +11,18 @@ import {
   Dashboard,
   DashboardCard,
   DashboardChart,
-  SalesChart,
+  TransactionChart,
 } from "../components";
 
 type Props = {};
 
 const MainDashboard = (props: Props) => {
-  const { user } = useAuth();
+  const { isLoading } = useAuth({ middleware: "auth" });
   const router = useRouter();
-  const { id: storeId } = router.query;
   const { data: stores } = useSWR("/api/stores", (url) =>
     axios.get(url).then((res) => res.data)
   );
   const storesId = stores && stores.data.map((item: any) => item.id);
-  // const { data: transactions } = useSWR(
-  //   `/api/transactions?filter[store_id]=1,2,3&limit=99999999`,
-  //   (url) => axios.get(url).then((res) => res.data)
-  // );
 
   const { data: modal } = useSWR(
     `/api/getAllStoresTransaction/?id=${storesId}&type=${TransactionType.IN}`,
@@ -38,7 +33,7 @@ const MainDashboard = (props: Props) => {
     (url) => axios.get(url).then((res) => res.data)
   );
   const { data: todaySales } = useSWR(
-    `/api/getAllStoresTransaction/?id=${storesId}&type=${TransactionType.OUT}&from=${filter.lastDays}&to=${filter.today}`,
+    `/api/getAllStoresTransaction/?id=${storesId}&type=${TransactionType.OUT}&from=${filter.lastDays}`,
     (url) => axios.get(url).then((res) => res.data)
   );
 
@@ -54,47 +49,8 @@ const MainDashboard = (props: Props) => {
       (sum: number, record: any) => sum + parseInt(record.total),
       0
     );
-  // const Sales =
-  //   getAllStoresTransaction &&
-  //   getAllStoresTransaction
-  //     .map((item: any) =>
-  //       item.transaction
-  //         .filter((item: any) => item.type == TransactionType.OUT)
-  //         .reduce(
-  //           (sum: number, record: any) => sum + record.qty * record.price,
-  //           0
-  //         )
-  //     )
-  //     .reduce((sum: number, record: any) => sum + record, 0);
-  // const today = new Date();
-  // const TodaysSales =
-  //   getAllStoresTransaction &&
-  //   getAllStoresTransaction
-  //     .map((item: any) =>
-  //       item.transaction
-  //         .filter(
-  //           (item: any) =>
-  //             item.type == TransactionType.OUT &&
-  //             new Date(item.created_at).getDate() == today.getDate()
-  //         )
-  //         .reduce(
-  //           (sum: number, record: any) => sum + record.qty * record.price,
-  //           0
-  //         )
-  //     )
-  //     .reduce((sum: number, record: any) => sum + record, 0);
 
-  // const top =
-  //   getAllStoresTransaction &&
-  //   getAllStoresTransaction.map((item: any) =>
-  //     _(item.transaction)
-  //       .filter((item: any) => item.type == TransactionType.IN)
-  //       .groupBy((v) => v.product_id)
-  //       .map((item) =>
-  //         item.reduce((sum: number, record: any) => sum + record.qty, 0)
-  //       )
-  //   );
-  if (!stores) return <Dashboard>Loading...</Dashboard>;
+  if (isLoading) return <Dashboard>Loading...</Dashboard>;
   return (
     <Dashboard>
       <div className="grid grid-flow-col items-center gap-4 pb-6">
@@ -120,12 +76,12 @@ const MainDashboard = (props: Props) => {
         />
       </div>
       <div className="grid grid-cols-2 gap-4 w-full">
-        <SalesChart
+        <TransactionChart
           title="Modal"
           storeId={storesId}
           type={TransactionType.IN}
         />
-        <SalesChart
+        <TransactionChart
           title="Sales"
           storeId={storesId}
           type={TransactionType.OUT}

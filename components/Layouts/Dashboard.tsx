@@ -12,10 +12,6 @@ type Props = {
 const Dashboard = (props: Props) => {
   const router = useRouter();
   const { toggle, toggler } = useToggle();
-  const { user } = useAuth();
-  // useEffect(() => {
-  //   if (!user.id) typeof window !== "undefined" && router.push("/login");
-  // }, []);
 
   return (
     <main className="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-white caret-lime-500 selection:bg-green-700 selection:text-white">

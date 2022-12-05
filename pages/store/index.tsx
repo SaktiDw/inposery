@@ -16,23 +16,21 @@ import useToggle from "@/helper/hooks/useToggle";
 import Swal from "sweetalert2";
 import qs from "qs";
 import useAuth from "@/helper/hooks/useAuth";
+import { Store, StoreInput, StoresResponse } from "@/helper/type/Store";
+import { AxiosResponse } from "axios";
 
-type Props = {
-  // res: any;
-};
-
-let user = {
-  name: "Some User",
-};
+type Props = {};
 
 const Stores = (props: Props) => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = useAuth({
+    middleware: "auth",
+  });
 
   const { toggle, toggler, setToggle } = useToggle();
   const [isEdit, setIsEdit] = useState(0);
-  const defaultValues = {
+  const defaultValues: StoreInput = {
     name: "",
-    user: user?.id,
+    user: user?.id || 0,
     image: "",
   };
   const [initialValues, setInitialValues] = useState(defaultValues);
@@ -49,39 +47,33 @@ const Stores = (props: Props) => {
     { encodeValuesOnly: true }
   );
   const { data: stores, mutate } = useSWR(
-    `/api/stores?${query}`,
-    async (url) => await axios.get(url).then((res) => res.data)
+    !isLoading ? `/api/stores?${query}` : null,
+    async (url) =>
+      await axios
+        .get(url)
+        .then((res: AxiosResponse<StoresResponse>) => res.data)
   );
-  const pagination = stores?.links.filter(
-    (item: any) => typeof parseInt(item.label) === "number"
-  );
-  const handleAdd = async (input: any) => {
-    await mutate(async (stores: any) => {
-      await axios.post("/api/stores", input).then((res) => {
-        Swal.fire("Success!", `${res.data.message}`, "success");
-        setToggle(false);
-        setInitialValues(defaultValues);
-        const newData = stores;
-        stores.data = [...stores, res.data];
-        return newData;
-      });
+
+  const handleAdd = async (input: StoreInput) => {
+    return await axios.post("/api/stores", input).then((res) => {
+      Swal.fire("Success!", `${res.data.message}`, "success");
+      setToggle(false);
+      setInitialValues(defaultValues);
+      return mutate();
     });
   };
 
   const handleDelete = async (id: number) => {
-    const filteredData = stores.data.filter((el: any) => el.id !== id);
-    const options = {
-      optimisticData: stores,
-      rollbackOnError: true,
-      revalidate: false,
-    };
-    await mutate({ ...stores, data: filteredData }, options);
     await axios
       .delete(`/api/stores/${id}`)
-      .then((res) => Swal.fire("Success!", `${res.data.message}`, "success"));
+      .then((res) => {
+        Swal.fire("Success!", `${res.data.message}`, "success");
+        return mutate();
+      })
+      .catch((err) => Swal.fire("Error!", `${err}`, "error"));
   };
 
-  const handleEdit = (store: any) => {
+  const handleEdit = (store: Store) => {
     setToggle(true);
     setIsEdit(store.id);
     setInitialValues({
@@ -91,21 +83,20 @@ const Stores = (props: Props) => {
     });
   };
 
-  const handleUpdate = async (id: any, input: any) => {
-    let filteredData: string | number;
-    filteredData = stores.data.findIndex((item: any) => item.id === id);
-
-    await mutate(async (stores: any) => {
-      await axios.put(`/api/stores/${id}`, input).then((res) => {
+  const handleUpdate = async (id: number, input: StoreInput) => {
+    return await axios
+      .put(`/api/stores/${id}`, input)
+      .then((res) => {
         Swal.fire("Success!", `${res.data.message}`, "success");
-        const updatedData = stores;
-        updatedData.data[filteredData] = res.data;
-        return updatedData;
+        setToggle(false);
+        setInitialValues(defaultValues);
+        setIsEdit(0);
+        return mutate();
+      })
+      .catch((err) => {
+        Swal.fire("Error!", `${err} log ${JSON.stringify(err)}`, "error");
+        return err;
       });
-    });
-    setToggle(false);
-    setInitialValues(defaultValues);
-    setIsEdit(0);
   };
 
   return (
@@ -139,7 +130,7 @@ const Stores = (props: Props) => {
       </Modal>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {stores &&
-          stores.data.map((store: any) => {
+          stores.data.map((store: Store) => {
             return (
               <StoreCard
                 key={store.id}
@@ -156,37 +147,3 @@ const Stores = (props: Props) => {
 };
 
 export default Stores;
-
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   const res = await axios
-//     .get("http://localhost:8810/api/stores", {
-//       headers: {
-//         Authorization: `Bearer ${ctx.req.cookies["access_token"]}`,
-//       },
-//     })
-//     .then((res) => res.data);
-//   axios.interceptors.response.use(
-//     async (res) => {
-//       return res;
-//     },
-//     async function (error: any) {
-//       const originalReq = error.config;
-//       if (error.response!.status === 401 && !originalReq!._retry) {
-//         originalReq!._retry = true;
-//         const res = await axios.get("http://localhost:8810/api/refresh-token", {
-//           params: {
-//             refreshToken: ctx.req.cookies["refresh_token"],
-//           },
-//         });
-//         const access_token = await res.data.access_token;
-//         axios.defaults.headers.common[
-//           "Authorization"
-//         ] = `Bearer ${access_token}`;
-//         return axios.create(originalReq);
-//       }
-//       return Promise.reject(error);
-//     }
-//   );
-//   // const data = await res.data;
-//   return { props: { res } };
-// };

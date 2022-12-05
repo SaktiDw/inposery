@@ -2,11 +2,16 @@ import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { Dropzone, Input } from "@/components";
+import { StoreInput, StoresResponse } from "@/helper/type/Store";
+import SubmitButton from "../Buttons/SubmitButton";
 
 type Props = {
-  handleAdd: any;
-  handleUpdate: any;
-  initialValues: any;
+  handleAdd: (input: StoreInput) => Promise<StoresResponse | undefined>;
+  handleUpdate: (
+    id: number,
+    input: StoreInput
+  ) => Promise<StoresResponse | undefined>;
+  initialValues: StoreInput;
   isEdit: number;
 };
 
@@ -25,7 +30,8 @@ const StoreForm = (props: Props) => {
       initialValues={props.initialValues}
       enableReinitialize={true}
       validationSchema={schema}
-      onSubmit={async (values, {}) => {
+      onSubmit={async (values, { setSubmitting }) => {
+        setSubmitting(true);
         props.isEdit <= 0
           ? props
               .handleAdd(values)
@@ -33,6 +39,7 @@ const StoreForm = (props: Props) => {
                 (err: any) =>
                   err.response && setErrorsResponse(err.response.data.message)
               )
+              .finally(() => setSubmitting(false))
           : props
               .handleUpdate(props.isEdit, values)
               .catch(
@@ -41,7 +48,7 @@ const StoreForm = (props: Props) => {
               );
       }}
     >
-      {({ errors, isValid, setFieldValue, values }) => (
+      {({ errors, setFieldValue, values, isSubmitting }) => (
         <Form className="flex flex-col justify-center items-stretch gap-4 ">
           <span className="text-red-500">{errorsResponse}</span>
 
@@ -60,13 +67,10 @@ const StoreForm = (props: Props) => {
             errors={errors.image}
             setFieldValue={setFieldValue}
           />
-          <button
-            type="submit"
-            disabled={!isValid}
-            className="bg-gradient-to-tl from-green-700 to-lime-500 disabled:from-green-800 disabled:to-green-800 disabled:cursor-not-allowed font-semibold shadow-lg py-2 px-4 rounded-lg "
-          >
-            Submit
-          </button>
+          <SubmitButton
+            disabled={isSubmitting}
+            text={isSubmitting ? "Loading ..." : "Submit"}
+          />
         </Form>
       )}
     </Formik>

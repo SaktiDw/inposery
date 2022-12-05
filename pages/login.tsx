@@ -1,8 +1,9 @@
 import { Input } from "@/components";
+import SubmitButton from "@/components/Buttons/SubmitButton";
 import useAuth from "@/helper/hooks/useAuth";
 import { AuthInput } from "@/helper/type/Auth";
 import { AxiosError } from "axios";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikValues } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -11,10 +12,7 @@ import * as Yup from "yup";
 type Props = {};
 
 const Login = (props: Props) => {
-  const [errors, setErrors] = useState([]);
-
   const { login, isLoading, user } = useAuth({ middleware: "guest" });
-  const [errorsResponse, setErrorsResponse] = useState<AxiosError<any>>();
   const authSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string()
@@ -29,9 +27,9 @@ const Login = (props: Props) => {
         initialTouched={{ email: true, password: true }}
         initialValues={{ email: "", password: "" }}
         validationSchema={authSchema}
-        onSubmit={async (values: any, { setErrors }) => {
+        onSubmit={async (values: FormikValues, { setErrors }) => {
           const { email, password } = values;
-          login({ email, password, setErrors });
+          login(setErrors, { email, password });
         }}
       >
         {({ isValid, errors }) => (
@@ -59,18 +57,12 @@ const Login = (props: Props) => {
               type="password"
             />
 
-            <button
-              type="submit"
-              disabled={!isValid}
-              className="w-full  text-white  bg-green-500 ring-2 ring-green-500 disabled:ring-green-800 disabled:bg-green-800 disabled:cursor-not-allowed disabled:shadow font-semibold shadow-xl py-2 px-4 rounded-lg "
-            >
-              Submit
-            </button>
+            <SubmitButton disabled={!isValid} text="Login" />
             <span className="text-slate-500">
               Dont have an account?{" "}
               <Link
                 href={"/register"}
-                className="text-green-700 hover:text-green-500 font-semibold"
+                className="text-green-600 hover:text-green-500 font-semibold"
               >
                 register here
               </Link>

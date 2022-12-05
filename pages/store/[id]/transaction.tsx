@@ -29,7 +29,7 @@ type Selected = {
 const Transaction = (props: Props) => {
   const router = useRouter();
   const storeId = router.query.id;
-  const { user } = useAuth();
+  const { user } = useAuth({ middleware: "auth" });
 
   const { toggle, toggler, setToggle } = useToggle();
 
@@ -211,7 +211,7 @@ const Transaction = (props: Props) => {
   return (
     <StoreDashboard>
       <div className="flex flex-col gap-4">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap justify-between gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
           <SearchInput onChange={(e) => setSearch(e.target.value)} />
         </div>

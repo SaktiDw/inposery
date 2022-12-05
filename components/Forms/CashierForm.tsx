@@ -16,6 +16,7 @@ type Props = {
 };
 
 function CashierForm(props: Props) {
+  const { toggle, toggler } = useToggle();
   const subTotal =
     props.cart.length > 0
       ? props.cart.reduce(
@@ -60,8 +61,8 @@ function CashierForm(props: Props) {
 
   return (
     <>
-      {/* <button
-        className="fixed z-50 top-0 right-0 m-6 mr-96"
+      <button
+        className="fixed z-50 top-0 right-0 m-6 mr-8"
         onClick={() => toggler()}
       >
         <i className="fi-rr-shopping-cart relative">
@@ -69,12 +70,13 @@ function CashierForm(props: Props) {
             {cartItem}
           </div>
         </i>
-      </button> */}
+      </button>
       <div
-        className={` w-[300px] pt-16 pb-4 px-2 overflow-hidden flex flex-col h-screen gap-4 fixed top-0 right-0 bg-slate-100 dark:bg-slate-900 bg-opacity-50 dark:bg-opacity-50 backdrop-blur-lg
+        className={`${toggle ? "w-full px-4" : "w-0"} 
+        sm:w-[300px] pt-16 pb-4 sm:px-2 overflow-hidden flex flex-col h-screen gap-4 fixed top-0 right-0 bg-slate-100 dark:bg-slate-900 bg-opacity-50 dark:bg-opacity-50 backdrop-blur-lg
         transition-all duration-300 scroll-smooth `}
       >
-        <ul className="flex flex-col gap-4 flex-1 overflow-y-auto py-4 pr-4">
+        <ul className="flex flex-col gap-4 flex-1 overflow-y-auto py-4 sm:pr-4">
           {props.cart &&
             props.cart.map((item: any, index: number) => {
               return (

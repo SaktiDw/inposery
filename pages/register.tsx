@@ -1,8 +1,9 @@
 import { Input } from "@/components";
+import SubmitButton from "@/components/Buttons/SubmitButton";
 import useAuth from "@/helper/hooks/useAuth";
 import { AuthInput } from "@/helper/type/Auth";
 import { AxiosError } from "axios";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikValues } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import * as Yup from "yup";
@@ -10,7 +11,7 @@ import * as Yup from "yup";
 type Props = {};
 
 const Register = (props: Props) => {
-  const { register } = useAuth();
+  const { register } = useAuth({ middleware: "guest" });
   const [errorsResponse, setErrorsResponse] = useState<AxiosError<any>>();
   const authSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
@@ -40,9 +41,9 @@ const Register = (props: Props) => {
           password_confirmation: "",
         }}
         validationSchema={authSchema}
-        onSubmit={async (values: any, { setErrors }) => {
+        onSubmit={async (values: FormikValues, { setErrors }) => {
           const { name, email, password, password_confirmation } = values;
-          register({ name, email, password, password_confirmation, setErrors });
+          register(setErrors, { name, email, password, password_confirmation });
         }}
       >
         {({ isValid, errors }) => (
@@ -71,24 +72,18 @@ const Register = (props: Props) => {
               errors={errors.password}
               label="Password"
               name="password"
-              placeholder="password"
+              placeholder="*******"
               type="password"
             />
             <Input
               errors={errors.password_confirmation}
               label="Password Confirmation"
               name="password_confirmation"
-              placeholder="password_confirmation"
+              placeholder="*******"
               type="password"
             />
 
-            <button
-              type="submit"
-              disabled={!isValid}
-              className="w-full  text-white  bg-green-500 ring-2 ring-green-500 disabled:ring-green-800 disabled:bg-green-800 disabled:cursor-not-allowed disabled:shadow font-semibold shadow-xl py-2 px-4 rounded-lg "
-            >
-              Submit
-            </button>
+            <SubmitButton disabled={!isValid} text="Register" />
             <span className="text-slate-500">
               Already have an account?{" "}
               <Link

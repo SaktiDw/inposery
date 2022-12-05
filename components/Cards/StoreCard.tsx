@@ -42,13 +42,16 @@ const StoreCard = (props: Props) => {
           </button>
         </div>
       </button>
-      <div className="relative bg-gradient-to-tl from-green-700 to-lime-500  p-2 leading-tight w-full h-[150px] overflow-hidden">
+      <div
+        className={`relative bg-gradient-to-tl from-green-700 to-lime-500  p-2 leading-tight w-full h-[150px] overflow-hidden `}
+      >
         {props.data.media[0] && (
           <Image
             fill
+            quality={75}
             src={props.data.media[0]?.original_url}
             alt={props.data.media[0]?.file_name}
-            className="object-cover w-full h-full"
+            className={`object-cover w-full h-full`}
           />
         )}
       </div>

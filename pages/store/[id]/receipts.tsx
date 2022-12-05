@@ -79,8 +79,7 @@ const Receipts = (props: Props) => {
   return (
     <StoreDashboard>
       <div className="flex flex-col gap-4">
-        receipts
-        <div className="flex gap-4">
+        <div className="flex flex-wrap justify-between gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
           <SearchInput onChange={(e) => setSearch(e.target.value)} />
         </div>

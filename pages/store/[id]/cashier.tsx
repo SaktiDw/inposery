@@ -13,17 +13,20 @@ import qs from "qs";
 import { useRouter } from "next/router";
 import useAuth from "@/helper/hooks/useAuth";
 import { Product } from "@/helper/type/Response";
+import { Cart } from "@/helper/type/Cashier";
+import { AxiosResponse } from "axios";
+import { ProductResponse } from "@/helper/type/Product";
 
 type Props = {};
 
 const Cashier = (props: Props) => {
   const router = useRouter();
   const storeId = router.query.id;
-  const { user } = useAuth();
+  const { isLoading } = useAuth({ middleware: "auth" });
 
-  const [search, setSearch] = useState("");
-  const [perPage, setPerPage] = useState(10);
-  const [pageIndex, setPageIndex] = useState(1);
+  const [perPage, setPerPage] = useState<string>("10");
+  const [search, setSearch] = useState<string>("");
+  const [pageIndex, setPageIndex] = useState<number>(1);
 
   const query = qs.stringify(
     {
@@ -38,12 +41,12 @@ const Cashier = (props: Props) => {
     error,
     mutate,
   } = useSWR(`/api/products?${query}`, (url) =>
-    axios.get(url).then((res) => res.data)
+    axios.get(url).then((res: AxiosResponse<ProductResponse>) => res.data)
   );
 
-  const [cart, setCart] = useState<any>([]);
+  const [cart, setCart] = useState<Cart[]>([]);
 
-  const handleAddCart = (item: any) => {
+  const handleAddCart = (item: Product) => {
     const product = {
       id: item.id,
       name: item.name,
@@ -52,7 +55,7 @@ const Cashier = (props: Props) => {
       orderQty: 1,
     };
 
-    if (cart.filter((el: any) => el.id === item.id).length > 0) return;
+    if (cart.filter((el: Cart) => el.id === item.id).length > 0) return;
 
     const newCart = [...cart, product];
     setCart(newCart);
@@ -65,7 +68,7 @@ const Cashier = (props: Props) => {
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
           <SearchInput onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4">
+        <div className="grid grid-cols-2 xl:grid-cols-4 w-full gap-4">
           {products &&
             products.data
               .filter((item: Product) => item.qty > 0)
