@@ -1,5 +1,4 @@
 import useAuth from "@/helper/hooks/useAuth";
-import { slugify } from "@/helper/lib/slug";
 import Link from "next/link";
 import React from "react";
 import { Dashboard, Navigation } from "../components";
@@ -8,7 +7,7 @@ type Props = {};
 
 const Home = (props: Props) => {
   // return <Dashboard>Home</Dashboard>;
-  const { user } = useAuth();
+  const { user } = useAuth({ middleware: "auth" });
   return (
     <>
       <main className="w-full h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-white">
@@ -16,7 +15,6 @@ const Home = (props: Props) => {
         <h1 className="text-slate-800 dark:text-white text-3xl">
           Landing Page ♥
         </h1>
-        {slugify("Landing Page ♥")}
         <Link href="/dashboard">Get Started</Link>
       </main>
     </>

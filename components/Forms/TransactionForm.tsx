@@ -1,8 +1,8 @@
-import axios from "@/helper/lib/api";
+import axios from "@/helper/lib/axios";
 import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
-import { Input } from "@/components";
+import { Input, SubmitButton } from "@/components";
 import useSWR from "swr";
 import qs from "qs";
 import { TransactionType } from "@/helper/type/enum";
@@ -45,7 +45,7 @@ const TransactionForm = (props: Props) => {
         store_id: props.storeId,
       }}
       validationSchema={storeSchema}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={(values, { setSubmitting }) => {
         props
           .mutation(values)
           .catch(
@@ -54,7 +54,7 @@ const TransactionForm = (props: Props) => {
           );
       }}
     >
-      {({ isValid, errors }) => (
+      {({ isSubmitting, errors }) => (
         <Form className="flex flex-col justify-center items-stretch gap-4 ">
           <span className="text-red-500">{errorsResponse}</span>
 
@@ -87,13 +87,10 @@ const TransactionForm = (props: Props) => {
             type="text"
           />
 
-          <button
-            type="submit"
-            disabled={!isValid}
-            className="bg-gradient-to-tl from-green-700 to-lime-500 disabled:from-green-800 disabled:to-green-800 disabled:cursor-not-allowed font-semibold shadow-lg py-2 px-4 rounded-lg "
-          >
-            Submit
-          </button>
+          <SubmitButton
+            text={`${isSubmitting ? "Loading..." : "Submit"}`}
+            disabled={isSubmitting}
+          />
         </Form>
       )}
     </Formik>

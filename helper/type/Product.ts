@@ -16,15 +16,15 @@ export interface Product {
 export interface ProductResponse {
   current_page: number;
   data: Product[];
-  first_page_url: string;
+  first_page_url: string | null;
   from: number;
   last_page: number;
-  last_page_url: string;
+  last_page_url: string | null;
   links: Link[];
-  next_page_url: string;
+  next_page_url: string | null;
   path: string;
   per_page: number;
-  prev_page_url?: any;
+  prev_page_url?: any | null;
   to: number;
   total: number;
 }

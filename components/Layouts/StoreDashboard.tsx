@@ -9,50 +9,41 @@ const StoreDashboard = ({ children }: { children: React.ReactNode }) => {
   const { toggle, toggler } = useToggle();
   const basePath = "/store/[id]";
   return (
-    <SWRConfig
-      value={{
-        onError: (error, key) => {
-          if (error.status === 404) {
-            router.push("/404");
-          }
-        },
-      }}
-    >
-      <div className="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-white">
-        <Navigation onClick={toggler} />
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar isOpen={toggle}>
-            <SidebarItem
-              href={`/store/${router.query.id}`}
-              text="Dashboard"
-              active={router.pathname == `${basePath}`}
-              icon="fi-rr-apps"
-            />
-            <SidebarItem
-              href={`/store/${router.query.id}/product`}
-              text="Product"
-              active={router.pathname == `${basePath}/product`}
-              icon="fi-rr-boxes"
-            />
-            <SidebarItem
-              href={`/store/${router.query.id}/transaction`}
-              text="Transaction"
-              active={router.pathname == `${basePath}/transaction`}
-              icon="fi-rr-money-check-edit"
-            />
-            <SidebarItem
-              href={`/store/${router.query.id}/cashier`}
-              text="Cashier"
-              active={router.pathname == `${basePath}/cashier`}
-              icon="fi-rr-store-alt"
-            />
-            <SidebarItem
-              href={`/store/${router.query.id}/receipts`}
-              text="Receipts"
-              active={router.pathname == `${basePath}/receipts`}
-              icon="fi-rr-credit-card"
-            />
-            {/* <SidebarItem
+    <div className="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-white">
+      <Navigation onClick={toggler} />
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar isOpen={toggle}>
+          <SidebarItem
+            href={`/store/${router.query.id}`}
+            text="Dashboard"
+            active={router.pathname == `${basePath}`}
+            icon="fi-rr-apps"
+          />
+          <SidebarItem
+            href={`/store/${router.query.id}/product`}
+            text="Product"
+            active={router.pathname == `${basePath}/product`}
+            icon="fi-rr-boxes"
+          />
+          <SidebarItem
+            href={`/store/${router.query.id}/transaction`}
+            text="Transaction"
+            active={router.pathname == `${basePath}/transaction`}
+            icon="fi-rr-money-check-edit"
+          />
+          <SidebarItem
+            href={`/store/${router.query.id}/cashier`}
+            text="Cashier"
+            active={router.pathname == `${basePath}/cashier`}
+            icon="fi-rr-store-alt"
+          />
+          <SidebarItem
+            href={`/store/${router.query.id}/receipts`}
+            text="Receipts"
+            active={router.pathname == `${basePath}/receipts`}
+            icon="fi-rr-credit-card"
+          />
+          {/* <SidebarItem
               href="/role"
               text="Roles"
               active={router.pathname == `${basePath}/role`}
@@ -64,13 +55,12 @@ const StoreDashboard = ({ children }: { children: React.ReactNode }) => {
               active={router.pathname == `${basePath}/test`}
               icon="fi-rr-test-tube"
             /> */}
-          </Sidebar>
-          <main className="flex flex-col gap-4 w-full min-h-screen h-full overflow-x-hidden overflow-y-auto pt-20 pb-4 px-8 relative">
-            {children}
-          </main>
-        </div>
+        </Sidebar>
+        <main className="flex flex-col gap-4 w-full min-h-screen h-full overflow-x-hidden overflow-y-auto pt-20 pb-4 px-8 relative">
+          {children}
+        </main>
       </div>
-    </SWRConfig>
+    </div>
   );
 };
 

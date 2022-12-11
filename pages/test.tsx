@@ -7,9 +7,9 @@ import {
 } from "@/components/index";
 import { TableColumn } from "@/components/Tables/Table";
 
-import axios from "@/helper/lib/api";
+import axios from "@/helper/lib/axios";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import qs from "qs";
 
@@ -24,8 +24,10 @@ const Transaction = (props: Props) => {
   const router = useRouter();
   const storeId = router.query.id;
   const params = router.query;
-
-  const [perPage, setPerPage] = useState<any>(params.limit);
+  useEffect(() => {
+    setPerPage(params.limit);
+  }, [router.isReady]);
+  const [perPage, setPerPage] = useState<any>(params.limit || 10);
   const [search, setSearch] = useState("");
   const [pageIndex, setPageIndex] = useState<any>(params.page);
 
@@ -78,6 +80,7 @@ const Transaction = (props: Props) => {
 
   return (
     <StoreDashboard>
+      {perPage} {params.limit}
       <div className="flex flex-col gap-4">
         <div className="flex gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />

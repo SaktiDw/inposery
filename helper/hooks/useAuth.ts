@@ -28,10 +28,8 @@ export default function useAuth({ middleware }: any = {}) {
 
     axios
       .post("/api/login", input)
-      .then(() => {
-        mutate();
-        router.push("/dashboard");
-      })
+      .then(() => mutate())
+      // .then(() => router.push("/dashboard"))
 
       .catch((error: any) => {
         if (error.response.status != 422) throw error;
@@ -63,14 +61,54 @@ export default function useAuth({ middleware }: any = {}) {
     router.push("/login");
   };
 
+  const forgotPassword = async ({ setErrors, setStatus, email }: any) => {
+    await csrf();
+
+    setErrors([]);
+    setStatus(null);
+
+    axios
+      .post("/forgot-password", { email })
+      .then((response) => setStatus(response.data.status))
+      .catch((error) => {
+        if (error.response.status !== 422) throw error;
+
+        setErrors(error.response.data.errors);
+      });
+  };
+
+  const resetPassword = async ({ setErrors, setStatus, ...props }: any) => {
+    await csrf();
+
+    setErrors([]);
+    setStatus(null);
+
+    axios
+      .post("/reset-password", { token: router.query.token, ...props })
+      .then((response) =>
+        router.push("/login?reset=" + btoa(response.data.status))
+      )
+      .catch((error) => {
+        if (error.response.status !== 422) throw error;
+
+        setErrors(error.response.data.errors);
+      });
+  };
+
+  const resendEmailVerification = ({ setStatus }: any) => {
+    axios
+      .post("/email/verification-notification")
+      .then((response) => setStatus(response.data.status));
+  };
+
   useEffect(() => {
     if (user || error) {
       setIsLoading(false);
     }
 
-    if (middleware == "guest" && user) router.push("/");
-    if (middleware == "auth" && !user && error) router.push("/login");
-  });
+    if (middleware == "guest" && user) router.replace("/dashboard");
+    if (middleware == "auth" && !user && error) router.replace("/login");
+  }, [user, error]);
 
   return {
     user,

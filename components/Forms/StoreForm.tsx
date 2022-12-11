@@ -1,9 +1,8 @@
 import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
-import { Dropzone, Input } from "@/components";
+import { Dropzone, Input, ResetButton, SubmitButton } from "@/components";
 import { StoreInput, StoresResponse } from "@/helper/type/Store";
-import SubmitButton from "../Buttons/SubmitButton";
 
 type Props = {
   handleAdd: (input: StoreInput) => Promise<StoresResponse | undefined>;
@@ -30,17 +29,14 @@ const StoreForm = (props: Props) => {
       initialValues={props.initialValues}
       enableReinitialize={true}
       validationSchema={schema}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(true);
+      onSubmit={(values, { setSubmitting }) => {
         props.isEdit <= 0
-          ? props
-              .handleAdd(values)
-              .catch(
-                (err: any) =>
-                  err.response && setErrorsResponse(err.response.data.message)
-              )
-              .finally(() => setSubmitting(false))
-          : props
+          ? props.handleAdd(values)
+          : // .catch(
+            //   (err: any) =>
+            //     err.response && setErrorsResponse(err.response.data.message)
+            // )
+            props
               .handleUpdate(props.isEdit, values)
               .catch(
                 (err: any) =>
@@ -71,6 +67,7 @@ const StoreForm = (props: Props) => {
             disabled={isSubmitting}
             text={isSubmitting ? "Loading ..." : "Submit"}
           />
+          <ResetButton text={"Reset"} />
         </Form>
       )}
     </Formik>

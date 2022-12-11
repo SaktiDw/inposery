@@ -29,10 +29,10 @@ const Login = (props: Props) => {
         validationSchema={authSchema}
         onSubmit={async (values: FormikValues, { setErrors }) => {
           const { email, password } = values;
-          login(setErrors, { email, password });
+          await login(setErrors, { email, password });
         }}
       >
-        {({ isValid, errors }) => (
+        {({ isSubmitting, errors }) => (
           <Form className="flex flex-col gap-4 w-1/2">
             <div className="text-3xl">Login</div>
             {errors.message && (
@@ -57,7 +57,10 @@ const Login = (props: Props) => {
               type="password"
             />
 
-            <SubmitButton disabled={!isValid} text="Login" />
+            <SubmitButton
+              disabled={isSubmitting}
+              text={`${isSubmitting ? "Loading..." : "Login"}`}
+            />
             <span className="text-slate-500">
               Dont have an account?{" "}
               <Link

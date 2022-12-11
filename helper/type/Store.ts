@@ -4,7 +4,7 @@ export interface Store {
   user_id: number;
   created_at: Date;
   updated_at: Date;
-  media: any[];
+  media?: any[];
 }
 
 export interface Link {

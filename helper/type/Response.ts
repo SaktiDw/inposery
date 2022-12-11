@@ -46,7 +46,7 @@ export interface Product {
 }
 
 export interface Link {
-  url: string;
+  url: string | null;
   label: string;
   active: boolean;
 }

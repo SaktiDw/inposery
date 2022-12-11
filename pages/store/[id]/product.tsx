@@ -58,7 +58,7 @@ const Products = (props: Props) => {
     axios.get(url).then((res: AxiosResponse<ProductResponse>) => res.data)
   );
 
-  const [selected, setSelected] = useState<Selected[]>([]);
+  const [selected, setSelected] = useState<number[]>([]);
   const columns: TableColumn<any>[] = [
     { title: "#", key: "id", dataType: "numbering" },
     { title: "Name", key: "name" },
@@ -74,22 +74,25 @@ const Products = (props: Props) => {
       render: (val) => (
         <div className="flex gap-4">
           <button
-            className="text-pink-500 text-sm font-semibold"
+            className="text-pink-500 text-sm flex gap-1"
             onClick={() => handleDelete(val.id)}
           >
             <i className="fi-rr-trash"></i>
+            <span className="hidden lg:flex text-pink-500">Delete</span>
           </button>
           <button
             onClick={() => handleEdit(val)}
-            className="text-lime-500 text-sm font-semibold"
+            className="text-green-700 text-sm flex gap-1"
           >
             <i className="fi-rr-pencil"></i>
+            <span className="hidden lg:flex text-green-700">Edit</span>
           </button>
           <button
             onClick={() => handleAddStockModal(val)}
-            className="text-blue-500 text-sm font-semibold"
+            className="text-blue-500 text-sm flex gap-1"
           >
             <i className="fi-rr-plus"></i>
+            <span className="hidden lg:flex text-blue-500">Add Stock</span>
           </button>
         </div>
       ),
@@ -109,7 +112,7 @@ const Products = (props: Props) => {
     input.store_id = storeId;
     return await axios.post("/api/products", input).then((res) => {
       Swal.fire("Success!", `${res.data.message}`, "success");
-      // setproductId(0);
+      setproductId(0);
       setToggle(false);
       setInitialValues(defaultValues);
       return mutate();
@@ -118,29 +121,46 @@ const Products = (props: Props) => {
 
   const handleDelete = async (ids: any) => {
     let filteredData;
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        if (typeof ids !== "number" && ids.length !== 0) {
+          let mustDelete = selected
+            .filter((item) => item !== null)
+            // .filter((item) => item.selected)
+            .map((item) => item);
+          filteredData = products!.data.filter(
+            (item: any) => !mustDelete.includes(item.id)
+          );
 
-    if (typeof ids !== "number" && ids.length !== 0) {
-      let mustDelete = selected
-        .filter((item) => item !== null)
-        .filter((item) => item.selected)
-        .map((item) => item.id);
-      filteredData = products!.data.filter(
-        (item: any) => !mustDelete.includes(item.id)
-      );
-
-      await axios
-        .delete(`/api/products/${mustDelete}`)
-        .then((res) => Swal.fire("Success!", `${res.data.message}`, "success"));
-      setSelected([]);
-    }
-    if (typeof ids == "number") {
-      filteredData = products!.data.filter((item: Product) => item.id !== ids);
-      await axios
-        .delete(`/api/products/${ids}`)
-        .then((res) => Swal.fire("Success!", `${res.data.message}`, "success"));
-      setSelected(selected.filter((item) => item.id !== ids));
-    }
-    return mutate();
+          await axios
+            .delete(`/api/products/${mustDelete}`)
+            .then((res) =>
+              Swal.fire("Success!", `${res.data.message}`, "success")
+            );
+          setSelected([]);
+        }
+        if (typeof ids == "number") {
+          filteredData = products!.data.filter(
+            (item: Product) => item.id !== ids
+          );
+          await axios
+            .delete(`/api/products/${ids}`)
+            .then((res) =>
+              Swal.fire("Success!", `${res.data.message}`, "success")
+            );
+          setSelected(selected.filter((item) => item !== ids));
+        }
+      }
+      return mutate();
+    });
   };
   const handleEdit = (product: Product) => {
     setToggle(true);
@@ -192,7 +212,7 @@ const Products = (props: Props) => {
 
   return (
     <StoreDashboard>
-      <div className="flex flex-wrap justify-between gap-4">
+      <div className="flex flex-wrap justify-between sm:justify-start gap-4">
         <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
         <SearchInput onChange={(e) => setSearch(e.target.value)} />
         <button

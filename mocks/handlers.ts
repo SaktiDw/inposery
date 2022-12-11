@@ -1,7 +1,7 @@
 import { rest } from "msw";
 import { Categories } from "./CategoryResponse";
 import { LoginResponse } from "./LoginResponse";
-import { Product, Products } from "./ProductsResponse";
+import { Products } from "./ProductsResponse";
 import { Receipts } from "./ReceiptsResponse";
 import { Stores, Store } from "./StoresResponse";
 import { Transactions } from "./TransactionsResponse";
@@ -19,9 +19,6 @@ export const handlers = [
   }),
   rest.get(`${baseUrl}/products`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(Products));
-  }),
-  rest.get(`${baseUrl}/products/1`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(Product));
   }),
   rest.get(`${baseUrl}/transactions`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(Transactions));

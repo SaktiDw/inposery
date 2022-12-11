@@ -23,14 +23,23 @@ const ProductCart = (props: Props) => {
             src={props.data?.media[0]?.original_url}
             alt={props.data?.media[0]?.file_name}
             className="object-cover w-full h-full"
+            data-testid="img"
           />
         )}
       </div>
       <div className="p-2 text-sm">
         <div className="truncate text-slate-500">{props.data?.name}</div>
         <div className="flex item-center justify-between font-semibold">
-          <PriceFormater price={props.data?.sell_price || 0} />
-          <span>{props.data?.qty.toLocaleString()}</span>
+          <PriceFormater price={props.data?.sell_price} />
+          <span
+            className={`${
+              props.data?.qty > 10
+                ? "text-slate-800 dark:text-white"
+                : "text-red-500"
+            }`}
+          >
+            {props.data?.qty.toLocaleString()}
+          </span>
         </div>
       </div>
     </div>

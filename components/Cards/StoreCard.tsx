@@ -1,5 +1,4 @@
 import useToggle from "@/helper/hooks/useToggle";
-import axios from "@/helper/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -28,18 +27,15 @@ const StoreCard = (props: Props) => {
             toggle ? "h-90" : "h-0"
           } absolute top-0 overflow-hidden `}
         >
-          <button
+          <div
             className="py-2 px-8 hover:bg-slate-500"
             onClick={props.onDelete}
           >
             Delete
-          </button>
-          <button
-            className="py-2 px-8 hover:bg-slate-500"
-            onClick={props.onEdit}
-          >
+          </div>
+          <div className="py-2 px-8 hover:bg-slate-500" onClick={props.onEdit}>
             Edit
-          </button>
+          </div>
         </div>
       </button>
       <div
@@ -52,6 +48,7 @@ const StoreCard = (props: Props) => {
             src={props.data.media[0]?.original_url}
             alt={props.data.media[0]?.file_name}
             className={`object-cover w-full h-full`}
+            data-testid="img"
           />
         )}
       </div>

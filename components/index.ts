@@ -19,14 +19,16 @@ export { default as Input } from "./Inputs/Input";
 export { default as SearchInput } from "./Inputs/SearchInput";
 export { default as PerPageSelect } from "./Inputs/PerPageSelect";
 export { default as Dropzone } from "./Inputs/Dropzone";
+export { default as Select } from "./Inputs/Select";
 
 export { default as PriceFormater } from "./FormatText/PriceFormater";
 export { default as Receipts } from "./Print/Receipts";
-export { default as Buttons } from "./Buttons/SubmitButton";
+export { default as SubmitButton } from "./Buttons/SubmitButton";
+export { default as ResetButton } from "./Buttons/ResetButton";
+export { default as CartButton } from "./Buttons/CartButton";
 
-export { default as TransactionChart } from "./Chart/TransactionChart";
-export { default as DashboardChart } from "./Chart/DashboardChart";
 export { default as ComparationChart } from "./Chart/ComparationChart";
 export { default as TopProductChart } from "./Chart/TopProductChart";
 export { default as ModalSalesChart } from "./Chart/ModalSalesChart";
 export { default as FilterChart } from "./Chart/FilterChart";
+export { default as ReportChart } from "./Chart/ReportChart";

@@ -1,4 +1,4 @@
-import axios from "@/helper/lib/api";
+import axios from "@/helper/lib/axios";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import React, { useState } from "react";

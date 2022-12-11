@@ -1,4 +1,4 @@
-import axios from "@/helper/lib/api";
+import axios from "@/helper/lib/axios";
 import React from "react";
 import useSWR from "swr";
 import { Dashboard } from "../components";

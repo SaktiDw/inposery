@@ -69,6 +69,7 @@ const OrderCard = (props: Props) => {
                 props.data.orderQty < props.data.qty &&
                 props.onUpdate(props.index, props.data.orderQty + 1)
               }
+              data-testid="increase"
             >
               <i className="flex items-center justify-center fi-rr-plus-small"></i>
             </button>

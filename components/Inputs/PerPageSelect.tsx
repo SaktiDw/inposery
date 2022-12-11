@@ -1,7 +1,7 @@
 import React from "react";
 
 type Props = {
-  onChange: (e: any) => void;
+  onChange: React.ChangeEventHandler<HTMLSelectElement>;
 };
 
 const PerPageSelect = (props: Props) => {

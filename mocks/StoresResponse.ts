@@ -67,8 +67,8 @@ export const Stores = {
       id: 1,
       name: "Dawn Winery",
       user_id: 1,
-      created_at: "2022-11-24T18:11:06.000000Z",
-      updated_at: "2022-11-24T18:11:06.000000Z",
+      created_at: new Date("2022-11-24T18:11:06.000000Z"),
+      updated_at: new Date("2022-11-24T18:11:06.000000Z"),
       media: [
         {
           id: 1,
@@ -87,8 +87,8 @@ export const Stores = {
           generated_conversions: { preview: true },
           responsive_images: [],
           order_column: 1,
-          created_at: "2022-11-24T18:11:06.000000Z",
-          updated_at: "2022-11-24T18:11:06.000000Z",
+          created_at: new Date("2022-11-24T18:11:06.000000Z"),
+          updated_at: new Date("2022-11-24T18:11:06.000000Z"),
           original_url: "http://localhost:8000/storage/1/med25A3.tmp",
           preview_url:
             "http://localhost:8000/storage/1/conversions/med25A3-preview.jpg",
@@ -99,16 +99,16 @@ export const Stores = {
       id: 2,
       name: "Dawn Winery2",
       user_id: 1,
-      created_at: "2022-11-24T18:13:16.000000Z",
-      updated_at: "2022-11-24T18:13:16.000000Z",
+      created_at: new Date("2022-11-24T18:13:16.000000Z"),
+      updated_at: new Date("2022-11-24T18:13:16.000000Z"),
       media: [],
     },
     {
       id: 3,
       name: "Dawn Winery3",
       user_id: 1,
-      created_at: "2022-11-24T18:13:36.000000Z",
-      updated_at: "2022-11-24T18:13:36.000000Z",
+      created_at: new Date("2022-11-24T18:13:36.000000Z"),
+      updated_at: new Date("2022-11-24T18:13:36.000000Z"),
       media: [
         {
           id: 2,
@@ -127,8 +127,8 @@ export const Stores = {
           generated_conversions: { preview: true },
           responsive_images: [],
           order_column: 1,
-          created_at: "2022-11-24T18:13:36.000000Z",
-          updated_at: "2022-11-24T18:13:37.000000Z",
+          created_at: new Date("2022-11-24T18:13:36.000000Z"),
+          updated_at: new Date("2022-11-24T18:13:37.000000Z"),
           original_url: "http://localhost:8000/storage/2/prLCIHoULyrPnx9Q.png",
           preview_url:
             "http://localhost:8000/storage/2/conversions/prLCIHoULyrPnx9Q-preview.jpg",

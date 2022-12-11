@@ -6,7 +6,7 @@ import {
   StoreDashboard,
   Table,
 } from "@/components";
-import axios from "@/helper/lib/api";
+import axios from "@/helper/lib/axios";
 import React, { useState } from "react";
 import useSWR from "swr";
 import qs from "qs";
@@ -79,7 +79,7 @@ const Receipts = (props: Props) => {
   return (
     <StoreDashboard>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap justify-between gap-4">
+        <div className="flex flex-wrap justify-between sm:justify-start gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
           <SearchInput onChange={(e) => setSearch(e.target.value)} />
         </div>

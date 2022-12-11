@@ -1,18 +1,22 @@
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { Input, OrderCard, PriceFormater } from "@/components";
-import axios from "@/helper/lib/api";
+import axios from "@/helper/lib/axios";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import useToggle from "@/helper/hooks/useToggle";
 import Swal from "sweetalert2";
 import { TransactionType } from "@/helper/type/enum";
-import { values } from "lodash";
+import { Cart } from "@/helper/type/Cashier";
+import { KeyedMutator } from "swr";
+import { ProductResponse } from "@/helper/type/Product";
 
 type Props = {
-  cart: any;
-  setCart: any;
-  mutation: any;
-  storeId: any;
+  isOpen: boolean;
+  close: React.Dispatch<React.SetStateAction<boolean>>;
+  cart: Cart[];
+  setCart: React.Dispatch<React.SetStateAction<Cart[]>>;
+  mutation: KeyedMutator<ProductResponse>;
+  storeId: string | string[] | undefined;
 };
 
 function CashierForm(props: Props) {
@@ -29,7 +33,7 @@ function CashierForm(props: Props) {
           0
         )
       : 0;
-  const cartItem =
+  const cartItem: number =
     props.cart.length > 0
       ? props.cart.reduce((accumulator: any, item: { orderQty: number }) => {
           return accumulator + item.orderQty;
@@ -61,22 +65,18 @@ function CashierForm(props: Props) {
 
   return (
     <>
-      <button
-        className="fixed z-50 top-0 right-0 m-6 mr-8"
-        onClick={() => toggler()}
-      >
-        <i className="fi-rr-shopping-cart relative">
-          <div className="absolute -top-2 -right-4 min-w-min w-6 whitespace-nowrap bg-green-700 text-xs font-bold flex items-center justify-center overflow-hidden rounded-full">
-            {cartItem}
-          </div>
-        </i>
-      </button>
       <div
-        className={`${toggle ? "w-full px-4" : "w-0"} 
-        sm:w-[300px] pt-16 pb-4 sm:px-2 overflow-hidden flex flex-col h-screen gap-4 fixed top-0 right-0 bg-slate-100 dark:bg-slate-900 bg-opacity-50 dark:bg-opacity-50 backdrop-blur-lg
+        className={`${props.isOpen ? "w-full px-4 z-50" : "w-0"} 
+        lg:w-[300px] pt-10 lg:pt-16 pb-4 lg:px-4 overflow-hidden flex flex-col h-screen gap-4 fixed top-0 right-0 bg-slate-100 dark:bg-slate-900 bg-opacity-50 dark:bg-opacity-50 backdrop-blur-lg
         transition-all duration-300 scroll-smooth `}
       >
-        <ul className="flex flex-col gap-4 flex-1 overflow-y-auto py-4 sm:pr-4">
+        <button
+          onClick={() => props.close(false)}
+          className="fixed top-0 right-0 m-4"
+        >
+          <i className="fi-rr-cross"></i>
+        </button>
+        <ul className="flex flex-col gap-4 flex-1 overflow-y-auto py-2">
           {props.cart &&
             props.cart.map((item: any, index: number) => {
               return (
@@ -100,7 +100,7 @@ function CashierForm(props: Props) {
               .required("Required"),
             product: Yup.string().required(),
           })}
-          onSubmit={async (values, {}) => {
+          onSubmit={(values, {}) => {
             if (values.product === "[]") return;
 
             props.cart.map(async (item: any) => {
@@ -115,7 +115,7 @@ function CashierForm(props: Props) {
               });
             }),
               subTotal;
-            await axios.post("/api/receipts", {
+            axios.post("/api/receipts", {
               store_id: props.storeId,
               products: JSON.stringify(props.cart),
               total: subTotal,

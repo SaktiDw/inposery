@@ -1,9 +1,14 @@
 import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
-import { Dropzone, Input } from "@/components";
+import {
+  Dropzone,
+  Input,
+  ResetButton,
+  Select,
+  SubmitButton,
+} from "@/components";
 import { ProductInput, ProductResponse } from "@/helper/type/Product";
-import SubmitButton from "../Buttons/SubmitButton";
 
 type Props = {
   handleAdd: (input: ProductInput) => Promise<ProductResponse | undefined>;
@@ -39,15 +44,15 @@ const ProductForm = (props: Props) => {
       initialValues={props.initialValues}
       enableReinitialize={true}
       validationSchema={schema}
-      onSubmit={async (values, {}) => {
+      onSubmit={async (values, { setSubmitting }) => {
         props.isEdit === 0
-          ? props
+          ? await props
               .handleAdd(values)
               .catch(
                 (err: any) =>
                   err.response && setErrorsResponse(err.response.data.message)
               )
-          : props
+          : await props
               .handleUpdate(props.isEdit, values)
               .catch(
                 (err: any) =>
@@ -82,10 +87,12 @@ const ProductForm = (props: Props) => {
             errors={errors.image}
             setFieldValue={setFieldValue}
           />
+
           <SubmitButton
             disabled={isSubmitting}
             text={isSubmitting ? "Loading ..." : "Submit"}
           />
+          <ResetButton text={"Reset"} />
         </Form>
       )}
     </Formik>

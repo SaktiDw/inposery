@@ -11,7 +11,7 @@ import {
 import { TableColumn } from "@/components/Tables/Table";
 
 import useToggle from "@/helper/hooks/useToggle";
-import axios from "@/helper/lib/api";
+import axios from "@/helper/lib/axios";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import useSWR from "swr";
@@ -211,15 +211,11 @@ const Transaction = (props: Props) => {
   return (
     <StoreDashboard>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap justify-between gap-4">
+        <div className="flex flex-wrap justify-between sm:justify-start gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
           <SearchInput onChange={(e) => setSearch(e.target.value)} />
         </div>
-        {products && (
-          <>
-            <Table data={products} columns={columns} />
-          </>
-        )}
+        {products && <Table data={products} columns={columns} />}
       </div>
       {products && <Pagination data={products} setPage={setPageIndex} />}
     </StoreDashboard>

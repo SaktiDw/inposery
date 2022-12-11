@@ -1,5 +1,5 @@
 import { Receipts } from "@/components";
-import axios from "@/helper/lib/api";
+import axios from "@/helper/lib/axios";
 import React, { useRef, useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
 import useSWR from "swr";
