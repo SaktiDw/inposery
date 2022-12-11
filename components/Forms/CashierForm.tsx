@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, OrderCard, PriceFormater } from "@/components";
+import { Input, OrderCard, PriceFormater, SubmitButton } from "@/components";
 import axios from "@/helper/lib/axios";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -113,6 +113,7 @@ function CashierForm(props: Props) {
                 description: "-",
                 discount: 0,
               });
+              return props.mutation();
             }),
               subTotal;
             axios.post("/api/receipts", {
@@ -124,12 +125,14 @@ function CashierForm(props: Props) {
               discount: 0,
             });
             props.setCart([]);
-            props.mutation();
             Swal.fire("Success!", `Transaksi berhasil!`, "success");
           }}
         >
-          {({ errors, isValid, values }) => (
+          {({ errors, isValid, isSubmitting, values }) => (
             <Form className="flex flex-col gap-2">
+              {values.product === "[]" && (
+                <span className="text-red-500">Cart must have product!!</span>
+              )}
               <div className="flex items-end gap-2 mt-auto">
                 <label htmlFor="" className="font-semibold">
                   Sub Total :
@@ -154,13 +157,12 @@ function CashierForm(props: Props) {
                   />
                 </div>
               )}
-              <button
-                disabled={!isValid}
-                className="w-full bg-gradient-to-tl from-green-700 to-lime-500 disabled:bg-gradient-to-tl disabled:from-green-900 disabled:to-lime-700 disabled:cursor-not-allowed py-2 px-4 rounded-lg shadow-lg"
-                type="submit"
-              >
-                Checkout
-              </button>
+              <SubmitButton
+                text={`${
+                  cartItem > 0 && isSubmitting ? "Loading..." : "Checkout"
+                }`}
+                disabled={isSubmitting}
+              />
             </Form>
           )}
         </Formik>
