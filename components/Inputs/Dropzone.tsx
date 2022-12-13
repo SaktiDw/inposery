@@ -1,4 +1,4 @@
-import { ErrorMessage } from "formik";
+import imageCompression from "browser-image-compression";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -12,37 +12,49 @@ type Props = {
 };
 
 const Dropzone = (props: Props) => {
-  const [files, setFiles] = useState<any>();
-  const [ImgPreview, setImgPreview] = useState<any>();
+  const [img, setImg] = useState<any>();
 
   const { getRootProps, getInputProps, fileRejections, isDragReject } =
     useDropzone({
       maxFiles: 1,
-      maxSize: 2048000,
+      maxSize: 5048000,
       accept: {
-        "image/*": [".jpeg", ".png"],
+        "image/*": [".jpeg", ".jpg", ".png", ".*"],
       },
       onDrop: (acceptedFiles, fileRejections) => {
-        setImgPreview("");
+        setImg("");
         props.setFieldValue("image", "");
         if (acceptedFiles[0]) {
-          const fileReader = new FileReader();
-          fileReader.onload = () => {
-            if (fileReader.readyState === 2) {
-              return props.setFieldValue("image", fileReader.result);
-            }
+          var options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
           };
-          fileReader.readAsDataURL(acceptedFiles[0]);
-          setImgPreview(URL.createObjectURL(acceptedFiles[0]));
+          imageCompression(acceptedFiles[0], options)
+            .then(function (compressedFile) {
+              alert(
+                `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+              ); // smaller than maxSizeMB
+              setImg(URL.createObjectURL(compressedFile));
+              const fileReader = new FileReader();
+              fileReader.onload = () => {
+                if (fileReader.readyState === 2) {
+                  return props.setFieldValue("image", fileReader.result);
+                }
+              };
+              fileReader.readAsDataURL(compressedFile);
+            })
+            .catch(function (error) {
+              alert(error.message);
+            });
         }
-        if (fileRejections) setFiles(fileRejections[0]);
       },
     });
 
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-    return () => URL.revokeObjectURL(ImgPreview);
-  }, [ImgPreview]);
+    return () => URL.revokeObjectURL(img);
+  }, [img]);
 
   return (
     <section className="container flex flex-col gap-4">
@@ -63,11 +75,11 @@ const Dropzone = (props: Props) => {
         <p>Drag & drop some files here, or click to select files</p>
       </div>
 
-      {props.value && ImgPreview && (
+      {props.value && img && (
         <section className="relative flex items-center justify-center w-full h-[300px] rounded-lg overflow-hidden">
           <Image
-            src={ImgPreview}
-            blurDataURL={ImgPreview}
+            src={img}
+            blurDataURL={img}
             placeholder="blur"
             alt=""
             quality={50}
@@ -75,7 +87,7 @@ const Dropzone = (props: Props) => {
             className="object-cover"
             loading="eager"
             onLoad={() => {
-              URL.revokeObjectURL(ImgPreview);
+              URL.revokeObjectURL(img);
             }}
           />
         </section>

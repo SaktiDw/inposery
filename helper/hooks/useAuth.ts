@@ -108,6 +108,8 @@ export default function useAuth({ middleware }: any = {}) {
 
     if (middleware == "guest" && user) router.replace("/dashboard");
     if (middleware == "auth" && !user && error) router.replace("/login");
+    if (user && user.email_verified_at == null)
+      router.replace("/email-verification");
   }, [user, error]);
 
   return {

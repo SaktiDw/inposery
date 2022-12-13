@@ -3,8 +3,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 
 type Props = {
-  labels: any[];
-  data: any[];
+  labels: string[];
+  data: number[];
   title: string;
   children?: React.ReactNode;
 };
@@ -49,7 +49,7 @@ const ComparationChart = (props: Props) => {
 
   if (!props.data)
     return (
-      <div className="h-full animate-pulse relative p-4 shadow-lg rounded-xl bg-white dark:bg-slate-800 flex justify-center items-center">
+      <div className="h-72 animate-pulse relative p-4 shadow-lg rounded-xl bg-white dark:bg-slate-800 flex justify-center items-center">
         Loading...
       </div>
     );
@@ -59,10 +59,12 @@ const ComparationChart = (props: Props) => {
       <h3 className="uppercase font-bold text-xs sm:text-md text-center leading-tight text-slate-500">
         {props.title}
       </h3>
-      {props.data.length > 0 ? (
+      {props.data.filter((item) => item !== 0).length > 0 ? (
         <Doughnut data={data} options={options} />
       ) : (
-        <span className="text-xl">No data</span>
+        <span className="text-xl h-64 flex items-center justify-center">
+          No data
+        </span>
       )}
       {props.children}
     </div>

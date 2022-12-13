@@ -1,32 +1,45 @@
 import { rest } from "msw";
-import { Categories } from "./CategoryResponse";
-import { LoginResponse } from "./LoginResponse";
-import { Products } from "./ProductsResponse";
-import { Receipts } from "./ReceiptsResponse";
-import { Stores, Store } from "./StoresResponse";
-import { Transactions } from "./TransactionsResponse";
+import {
+  DashboardMock,
+  getTopProductMock,
+  ProductsMock,
+  ReceiptsMock,
+  StoreMock,
+  StoresMock,
+  TransactionsMock,
+  UserMock,
+} from "./response";
 
-const baseUrl = `http://localhost:8810/api`;
+const baseUrl = process.env.API_URL;
 export const handlers = [
-  rest.get(`${baseUrl}/login`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(LoginResponse));
+  rest.get(`http://localhost:8000/api/user`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(UserMock));
   }),
-  rest.get(`${baseUrl}/stores`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(Stores));
+  rest.get(`http://localhost:8000/api/dashboard`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(DashboardMock));
   }),
-  rest.get(`${baseUrl}/stores/1`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(Store));
+  rest.get(`http://localhost:8000/api/getTopProduct`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(getTopProductMock));
   }),
-  rest.get(`${baseUrl}/products`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(Products));
+  rest.get(`http://localhost:8000/api/stores`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(StoresMock));
   }),
-  rest.get(`${baseUrl}/transactions`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(Transactions));
+  rest.get(`http://localhost:8000/api/stores/1`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(StoreMock));
   }),
-  rest.get(`${baseUrl}/receipts`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(Receipts));
+  rest.get(`http://localhost:8000/api/products`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(ProductsMock));
   }),
-  rest.get(`${baseUrl}/categories`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(Categories));
+  rest.get(`http://localhost:8000/api/transactions`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(TransactionsMock));
   }),
+  rest.get(`http://localhost:8000/api/receipts`, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(ReceiptsMock));
+  }),
+  // rest.get(`http://localhost:8000/api/categories`, (req, res, ctx) => {
+  //   return res(ctx.status(200), ctx.json(null));
+  // }),
+  // rest.get(`http://localhost:8000/api/getTopProduct/`, (req, res, ctx) => {
+  //   return res(ctx.status(200), ctx.json(null));
+  // }),
 ];

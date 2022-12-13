@@ -9,7 +9,7 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
-import { Dashboard, DashboardCard, ReportChart } from "../components";
+import { DashboardLayout, DashboardCard, ReportChart } from "../components";
 
 type Props = {};
 
@@ -21,7 +21,7 @@ const MainDashboard = (props: Props) => {
   );
   const storesId = stores && stores.data.map((item: any) => item.id);
 
-  const { data: dashboard } = useSWR(`/api/asd/?id=${storesId}`, (url) =>
+  const { data: dashboard } = useSWR(`/api/dashboard/?id=${storesId}`, (url) =>
     axios.get(url).then((res: AxiosResponse<DashboardResponse[]>) => res.data)
   );
 
@@ -77,9 +77,9 @@ const MainDashboard = (props: Props) => {
       )
     : 0;
 
-  if (!dashboard) return <Dashboard>Loading...</Dashboard>;
+  if (!dashboard) return <DashboardLayout>Loading...</DashboardLayout>;
   return (
-    <Dashboard>
+    <DashboardLayout>
       <div className="grid grid-cols-2 sm:grid-cols-none sm:grid-flow-col items-center gap-4 pb-6">
         <DashboardCard
           title="Total Profit"
@@ -101,7 +101,7 @@ const MainDashboard = (props: Props) => {
               ? ((total_out_today - total_out_yesterday) /
                   total_out_yesterday) *
                 100
-              : 100
+              : 0
           }
         />
         <DashboardCard
@@ -122,7 +122,7 @@ const MainDashboard = (props: Props) => {
           type={TransactionType.OUT}
         />
       </div>
-    </Dashboard>
+    </DashboardLayout>
   );
 };
 

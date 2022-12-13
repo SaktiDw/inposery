@@ -46,7 +46,7 @@ const Register = (props: Props) => {
           register(setErrors, { name, email, password, password_confirmation });
         }}
       >
-        {({ isValid, errors }) => (
+        {({ isSubmitting, errors }) => (
           <Form className="flex flex-col gap-4 w-1/2">
             <div className="text-3xl">Register</div>
             {errors.message && (
@@ -83,7 +83,10 @@ const Register = (props: Props) => {
               type="password"
             />
 
-            <SubmitButton disabled={!isValid} text="Register" />
+            <SubmitButton
+              disabled={isSubmitting}
+              text={`${isSubmitting ? "Loading..." : "Register"}`}
+            />
             <span className="text-slate-500">
               Already have an account?{" "}
               <Link

@@ -5,7 +5,7 @@ import {
   PerPageSelect,
   ProductCard,
   SearchInput,
-  StoreDashboard,
+  StoreLayout,
 } from "@/components/index";
 import axios from "@/helper/lib/axios";
 import React, { useState } from "react";
@@ -65,7 +65,7 @@ const Cashier = (props: Props) => {
   };
 
   return (
-    <StoreDashboard>
+    <StoreLayout>
       <div className="flex flex-col gap-4 relative lg:mr-[300px]">
         <div className="flex gap-4 items-center">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
@@ -97,7 +97,7 @@ const Cashier = (props: Props) => {
         mutation={mutate}
         storeId={storeId}
       />
-    </StoreDashboard>
+    </StoreLayout>
   );
 };
 

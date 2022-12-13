@@ -46,12 +46,10 @@ const TransactionForm = (props: Props) => {
       }}
       validationSchema={storeSchema}
       onSubmit={(values, { setSubmitting }) => {
-        props
-          .mutation(values)
-          .catch(
-            (err: any) =>
-              err.response && setErrorsResponse(err.response.data.message)
-          );
+        props.mutation(values).catch((err: any) => {
+          err.response && setErrorsResponse(err.response.data.message);
+          setSubmitting(false);
+        });
       }}
     >
       {({ isSubmitting, errors }) => (

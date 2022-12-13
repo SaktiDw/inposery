@@ -1,5 +1,4 @@
 import { render } from "@testing-library/react";
-import { WrappedBuildError } from "next/dist/server/base-server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import OrderCard from "./OrderCard";
 

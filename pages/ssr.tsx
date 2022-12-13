@@ -3,7 +3,7 @@
 //   Pagination,
 //   PerPageSelect,
 //   SearchInput,
-//   StoreDashboard,
+//   StoreLayout,
 // } from "@/components";
 // import axios from "@/helper/lib/axios";
 // import { useRouter } from "next/router";
@@ -44,8 +44,8 @@
 //   );
 //   // there should be no `undefined` state
 
-//   if (error) return <StoreDashboard>An error has occurred.</StoreDashboard>;
-//   if (!data) return <StoreDashboard>Loading...</StoreDashboard>;
+//   if (error) return <StoreLayout>An error has occurred.</StoreLayout>;
+//   if (!data) return <StoreLayout>Loading...</StoreLayout>;
 
 //   const columns: TableColumn<any>[] = [
 //     { title: "#", key: "id", dataType: "numbering" },
@@ -78,7 +78,7 @@
 //   ];
 
 //   return (
-//     <StoreDashboard>
+//     <StoreLayout>
 //       <div className="flex flex-col gap-4">
 //         <div className="flex gap-4">
 //           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
@@ -87,7 +87,7 @@
 //         {data && <Table data={data} columns={columns} />}
 //       </div>
 //       {data && <Pagination data={data} setPage={setPageIndex} />}
-//     </StoreDashboard>
+//     </StoreLayout>
 //   );
 // };
 
@@ -103,7 +103,7 @@ import {
   Pagination,
   PerPageSelect,
   SearchInput,
-  StoreDashboard,
+  StoreLayout,
 } from "@/components";
 import Table, { TableColumn } from "@/components/Tables/Table";
 import axios from "@/helper/lib/axios";
@@ -156,7 +156,7 @@ const SSRTest = (props: Props) => {
   ];
 
   return (
-    <StoreDashboard>
+    <StoreLayout>
       <div className="flex flex-col gap-4">
         <div className="flex gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
@@ -165,7 +165,7 @@ const SSRTest = (props: Props) => {
         {props.data && <Table data={props.data} columns={columns} />}
       </div>
       {props.data && <Pagination data={props.data} setPage={setPageIndex} />}
-    </StoreDashboard>
+    </StoreLayout>
   );
 };
 

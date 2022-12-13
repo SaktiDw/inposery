@@ -2,7 +2,7 @@ import {
   Pagination,
   PerPageSelect,
   SearchInput,
-  StoreDashboard,
+  StoreLayout,
   Table,
 } from "@/components/index";
 import { TableColumn } from "@/components/Tables/Table";
@@ -26,7 +26,7 @@ const Transaction = (props: Props) => {
   const params = router.query;
   useEffect(() => {
     setPerPage(params.limit);
-  }, [router.isReady]);
+  }, [router.isReady, params.limit]);
   const [perPage, setPerPage] = useState<any>(params.limit || 10);
   const [search, setSearch] = useState("");
   const [pageIndex, setPageIndex] = useState<any>(params.page);
@@ -79,8 +79,8 @@ const Transaction = (props: Props) => {
   ];
 
   return (
-    <StoreDashboard>
-      {perPage} {params.limit}
+    <StoreLayout>
+      {/* {perPage} {params.limit} */}
       <div className="flex flex-col gap-4">
         <div className="flex gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
@@ -93,7 +93,7 @@ const Transaction = (props: Props) => {
         )}
       </div>
       {products && <Pagination data={products} setPage={setPageIndex} />}
-    </StoreDashboard>
+    </StoreLayout>
   );
 };
 

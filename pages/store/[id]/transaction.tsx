@@ -4,7 +4,7 @@ import {
   PerPageSelect,
   ProductForm,
   SearchInput,
-  StoreDashboard,
+  StoreLayout,
   Table,
   TransactionForm,
 } from "@/components/index";
@@ -209,7 +209,7 @@ const Transaction = (props: Props) => {
   // };
 
   return (
-    <StoreDashboard>
+    <StoreLayout>
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap justify-between sm:justify-start gap-4">
           <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
@@ -218,7 +218,7 @@ const Transaction = (props: Props) => {
         {products && <Table data={products} columns={columns} />}
       </div>
       {products && <Pagination data={products} setPage={setPageIndex} />}
-    </StoreDashboard>
+    </StoreLayout>
   );
 };
 

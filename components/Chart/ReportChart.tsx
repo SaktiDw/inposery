@@ -62,7 +62,7 @@ const ReportChart = (props: Props) => {
     props.data &&
     props.data.map((item) =>
       item.transaction
-        .filter((item) => item.type == TransactionType.IN)
+        .filter((item) => item.type == props.type)
         .map((item) => {
           return {
             total: parseInt(item.total),
@@ -89,19 +89,18 @@ const ReportChart = (props: Props) => {
     }),
   };
 
-  if (!props.data)
-    return (
-      <div className="h-full animate-pulse relative p-4 shadow-lg rounded-xl bg-white dark:bg-slate-800 flex justify-center items-center">
-        Loading...
-      </div>
-    );
-
   return (
-    <div className="relative p-4 shadow-lg rounded-xl bg-white dark:bg-slate-800">
+    <div className="relative w-full h-full flex flex-col justify-between items-center p-4 shadow-lg rounded-xl bg-white dark:bg-slate-800">
       <h3 className="uppercase font-bold text-xs sm:text-md text-center leading-tight text-slate-500">
         {props.title}
       </h3>
-      <Bar options={options} data={data} className="w-full" />
+      {props.data.length > 0 ? (
+        <Bar options={options} data={data} className="w-full" />
+      ) : (
+        <span className="text-lg h-64 flex items-center justify-center">
+          No Data
+        </span>
+      )}
     </div>
   );
 };

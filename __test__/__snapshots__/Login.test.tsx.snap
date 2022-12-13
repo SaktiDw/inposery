@@ -24,11 +24,10 @@ exports[`Login Page Testing > Should be render Login Page 1`] = `
           E-mail
         </label>
         <input
-          class="py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md ring-lime-500"
+          class="py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md ring-lime-500 disabled:cursor-not-allowed"
           id="email"
           name="email"
           placeholder="e.g example@gmail.com"
-          required=""
           type="email"
           value=""
         />
@@ -43,11 +42,10 @@ exports[`Login Page Testing > Should be render Login Page 1`] = `
           Password
         </label>
         <input
-          class="py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md ring-lime-500"
+          class="py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md ring-lime-500 disabled:cursor-not-allowed"
           id="password"
           name="password"
           placeholder="password"
-          required=""
           type="password"
           value=""
         />

@@ -5,7 +5,7 @@ import {
   PriceFormater,
   ProductForm,
   SearchInput,
-  StoreDashboard,
+  StoreLayout,
   TransactionForm,
 } from "@/components";
 import Table, { TableColumn } from "@/components/Tables/Table";
@@ -202,16 +202,14 @@ const Products = (props: Props) => {
     });
   };
 
-  if (isLoading) return <StoreDashboard>Loading</StoreDashboard>;
+  if (isLoading) return <StoreLayout>Loading</StoreLayout>;
   if (error)
     return (
-      <StoreDashboard>
-        {JSON.stringify(error.response.data.message)}
-      </StoreDashboard>
+      <StoreLayout>{JSON.stringify(error.response.data.message)}</StoreLayout>
     );
 
   return (
-    <StoreDashboard>
+    <StoreLayout>
       <div className="flex flex-wrap justify-between sm:justify-start gap-4">
         <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
         <SearchInput onChange={(e) => setSearch(e.target.value)} />
@@ -262,7 +260,7 @@ const Products = (props: Props) => {
           productId={productId}
         />
       </Modal>
-    </StoreDashboard>
+    </StoreLayout>
   );
 };
 

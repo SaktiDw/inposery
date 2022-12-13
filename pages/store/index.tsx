@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import useSWR from "swr";
 import {
-  Dashboard,
+  DashboardLayout,
   Modal,
   Pagination,
   PerPageSelect,
@@ -100,7 +100,7 @@ const Stores = (props: Props) => {
   };
 
   return (
-    <Dashboard className="flex flex-col gap-6">
+    <DashboardLayout className="flex flex-col gap-6">
       <div className="flex items-center gap-4 text-slate-500">
         <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
         <SearchInput onChange={(e) => setSearch(e.target.value)} />
@@ -142,7 +142,7 @@ const Stores = (props: Props) => {
           })}
       </div>
       {stores && <Pagination data={stores} setPage={setPageIndex} />}
-    </Dashboard>
+    </DashboardLayout>
   );
 };
 

@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll } from "vitest";
 import { server } from "./mocks/server";
 
-beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
+beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }));
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());

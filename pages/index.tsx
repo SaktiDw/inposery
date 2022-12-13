@@ -1,12 +1,12 @@
 import useAuth from "@/helper/hooks/useAuth";
 import Link from "next/link";
 import React from "react";
-import { Dashboard, Navigation } from "../components";
+import { DashboardLayout, Navigation } from "../components";
 
 type Props = {};
 
 const Home = (props: Props) => {
-  // return <Dashboard>Home</Dashboard>;
+  // return <DashboardLayout>Home</DashboardLayout>;
   const { user } = useAuth({ middleware: "auth" });
   return (
     <>

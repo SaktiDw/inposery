@@ -9,7 +9,7 @@ type Props = {
   className?: string;
   children: React.ReactNode;
 };
-const Dashboard = (props: Props) => {
+const DashboardLayout = (props: Props) => {
   const router = useRouter();
   const { toggle, toggler } = useToggle();
 
@@ -65,4 +65,4 @@ const Dashboard = (props: Props) => {
   );
 };
 
-export default Dashboard;
+export default DashboardLayout;

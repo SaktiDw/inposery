@@ -1,13 +1,27 @@
+import axios from "@/helper/lib/axios";
 import { Navigation, Sidebar, SidebarItem } from "components";
 import { useRouter } from "next/router";
 import React from "react";
-import { SWRConfig } from "swr";
+import useSWR, { SWRConfig } from "swr";
 import useToggle from "../../helper/hooks/useToggle";
 
-const StoreDashboard = ({ children }: { children: React.ReactNode }) => {
+const StoreLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const { id: storeId } = router.query;
   const { toggle, toggler } = useToggle();
   const basePath = "/store/[id]";
+  const { data: store, error } = useSWR(
+    storeId ? `/api/stores/${storeId}` : null,
+    (url) =>
+      axios
+        .get(url)
+        .then((res) => res.data)
+        .catch((err) => err)
+  );
+  if (error && error.response.status && error.response.status === 403)
+    router.replace("/403");
+  if (error && error.response.status && error.response.status === 404)
+    router.replace("/404");
   return (
     <div className="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-white">
       <Navigation onClick={toggler} />
@@ -64,4 +78,4 @@ const StoreDashboard = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default StoreDashboard;
+export default StoreLayout;

@@ -6,7 +6,6 @@ import useSWR from "swr";
 
 type Props = {
   onClick: () => void;
-  data?: any;
 };
 
 const Navigation = (props: Props) => {
@@ -24,7 +23,7 @@ const Navigation = (props: Props) => {
       </div>
       {/* <span className="text-lime-500 font-bold text-2xl">Store Name</span> */}
       <div className="flex gap-2 ">
-        {user && user ? (
+        {user ? (
           <span className="cursor-pointer" onClick={() => logout()}>
             {user.email}
           </span>
@@ -40,17 +39,3 @@ const Navigation = (props: Props) => {
 };
 
 export default Navigation;
-
-// export const getSeverSideProps = async (ctx: any) => {
-//   const res = await axios.get("/api/me", {
-//     headers: {
-//       Authorization: `Bearer ${ctx.req.headers.cookie}`,
-//     },
-//   });
-//   const data = await res.data.data;
-//   return {
-//     props: {
-//       data,
-//     },
-//   };
-// };

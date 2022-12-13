@@ -131,13 +131,16 @@ function CashierForm(props: Props) {
           {({ errors, isValid, isSubmitting, values }) => (
             <Form className="flex flex-col gap-2">
               {values.product === "[]" && (
-                <span className="text-red-500">Cart must have product!!</span>
+                <span className="text-red-500">Cart is empty!!</span>
               )}
-              <div className="flex items-end gap-2 mt-auto">
+              <div className="flex items-end gap-2 mt-auto text-sm md:text-md">
                 <label htmlFor="" className="font-semibold">
                   Sub Total :
                 </label>
-                <PriceFormater price={subTotal} className="text-lg font-bold" />
+                <PriceFormater
+                  price={subTotal}
+                  className="text-sm md:text-lg font-bold"
+                />
               </div>
               <Input
                 label="Payment :"
@@ -145,6 +148,7 @@ function CashierForm(props: Props) {
                 placeholder="e.g 1000"
                 type="number"
                 name="payment"
+                disabled={values.product === "[]"}
               />
               {isValid && parseInt(values.payment) > 0 && (
                 <div className="flex items-end gap-2 mt-auto">

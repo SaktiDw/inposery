@@ -1,8 +1,7 @@
 import {
   DashboardCard,
-  StoreDashboard,
+  StoreLayout,
   TopProductChart,
-  ModalSalesChart,
   ReportChart,
   ComparationChart,
 } from "@/components";
@@ -23,7 +22,7 @@ const Store = (props: Props) => {
 
   const { isLoading } = useAuth({ middleware: "auth" });
 
-  const { data: dashboard } = useSWR(`/api/asd/?id=${storeId}`, (url) =>
+  const { data: dashboard } = useSWR(`/api/dashboard/?id=${storeId}`, (url) =>
     axios.get(url).then((res: AxiosResponse<DashboardResponse[]>) => res.data)
   );
 
@@ -79,10 +78,10 @@ const Store = (props: Props) => {
       )
     : 0;
 
-  if (!dashboard) return <StoreDashboard>Loading...</StoreDashboard>;
+  if (!dashboard) return <StoreLayout>Loading...</StoreLayout>;
 
   return (
-    <StoreDashboard>
+    <StoreLayout>
       <div className="grid grid-cols-2 sm:grid-cols-none sm:grid-flow-col items-center gap-4">
         <DashboardCard
           title="Total Profit"
@@ -105,7 +104,7 @@ const Store = (props: Props) => {
           type="pricing"
           diff={
             total_out_yesterday !== 0
-              ? (10 - total_out_yesterday) / total_out_yesterday
+              ? (total_out_today - total_out_yesterday) / total_out_yesterday
               : 100
           }
         />
@@ -147,7 +146,7 @@ const Store = (props: Props) => {
           title={"Comparation Top 5 Product OUT"}
         />
       </div>
-    </StoreDashboard>
+    </StoreLayout>
   );
 };
 
