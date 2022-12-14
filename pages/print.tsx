@@ -12,9 +12,13 @@ const Print = (props: Props) => {
   const router = useRouter();
   const { id } = router.query;
   const componentRef = useRef(null);
-  const { data: receipts } = useSWR(`/api/receipts/${id}`, (url) =>
+  const { data: receipts, error } = useSWR(`/api/receipts/${id}`, (url) =>
     axios.get(url).then((res) => res.data)
   );
+  if (error && error.response.status && error.response.status === 403)
+    router.replace("/403");
+  if (error && error.response.status && error.response.status === 404)
+    router.replace("/404");
   return (
     <>
       <div className="flex flex-col items-center justify-center gap-4">
