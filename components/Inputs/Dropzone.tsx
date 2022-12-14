@@ -32,9 +32,9 @@ const Dropzone = (props: Props) => {
           };
           imageCompression(acceptedFiles[0], options)
             .then(function (compressedFile) {
-              alert(
-                `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
-              ); // smaller than maxSizeMB
+              // alert(
+              //   `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+              // ); // smaller than maxSizeMB
               setImg(URL.createObjectURL(compressedFile));
               const fileReader = new FileReader();
               fileReader.onload = () => {
