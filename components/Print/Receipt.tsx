@@ -62,7 +62,7 @@ export const Receipt = forwardRef((props: any, ref: any) => {
         </div>
         <div className="p-2 flex items-center justify-center">
           <QRImage transparent={true} background="white" color="black" size={5}>
-            {`${process.env.url}/print`}
+            {`${process.env.URL}/print?id=${props.data.id}`}
           </QRImage>
         </div>
         <div className="py-2 px-4 text-center flex flex-col gap-2">
