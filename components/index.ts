@@ -3,6 +3,7 @@ export { default as Sidebar } from "./Nav/Sidebar";
 export { default as SidebarItem } from "./Nav/SidebarItem";
 export { default as DashboardLayout } from "./Layouts/DashboardLayout";
 export { default as StoreLayout } from "./Layouts/StoreLayout";
+export { default as ErrorLayout } from "./Layouts/ErrorLayout";
 export { default as DashboardCard } from "./Cards/DashboardCard";
 export { default as StoreCard } from "./Cards/StoreCard";
 export { default as ProductCard } from "./Cards/ProductCard";

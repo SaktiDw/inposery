@@ -12,16 +12,14 @@ const StoreLayout = ({ children }: { children: React.ReactNode }) => {
   const basePath = "/store/[id]";
   const { data: store, error } = useSWR(
     storeId ? `/api/stores/${storeId}` : null,
-    (url) =>
-      axios
-        .get(url)
-        .then((res) => res.data)
-        .catch((err) => err)
+    (url) => axios.get(url).then((res) => res.data)
   );
+
   if (error && error.response.status && error.response.status === 403)
     router.replace("/403");
   if (error && error.response.status && error.response.status === 404)
     router.replace("/404");
+
   return (
     <div className="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-white">
       <Navigation onClick={toggler} />
@@ -71,7 +69,7 @@ const StoreLayout = ({ children }: { children: React.ReactNode }) => {
             /> */}
         </Sidebar>
         <main className="flex flex-col gap-4 w-full min-h-screen h-full overflow-x-hidden overflow-y-auto pt-20 pb-4 px-8 relative">
-          {children}
+          {!error && children}
         </main>
       </div>
     </div>
