@@ -1,7 +1,9 @@
+import { Store } from "@/helper/type/Store";
 import React from "react";
 
 type Props = {
   isOpen: boolean;
+  store?: Store;
   children?: React.ReactNode;
 };
 
@@ -17,7 +19,7 @@ ${props.isOpen ? "w-0 p-0" : "w-[300px]"}`}
         {props.children}
       </div>
       <div className="p-4 mx-4 rounded-md shadow-lg bg-gradient-to-tl from-green-700 to-lime-500 mt-auto flex gap-2">
-        Pro
+        {props.store ? props.store.name : "Dashboard"}
       </div>
     </aside>
   );

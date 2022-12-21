@@ -41,7 +41,7 @@ const StoreLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-white">
       <Navigation onClick={toggler} />
       <div className="flex h-screen overflow-hidden">
-        <Sidebar isOpen={toggle}>
+        <Sidebar isOpen={toggle} store={store}>
           <SidebarItem
             href={`/store/${router.query.id}`}
             text="Dashboard"

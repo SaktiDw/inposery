@@ -9,11 +9,11 @@ type Props = {
   setSelected: React.Dispatch<React.SetStateAction<Option[]>>;
   isCreateable?: boolean;
 };
-const options = [
-  { label: "Grapes 🍇", value: "grapes" },
-  { label: "Mango 🥭", value: "mango" },
-  { label: "Strawberry 🍓", value: "strawberry", disabled: true },
-];
+// const options = [
+//   { label: "Grapes 🍇", value: "grapes" },
+//   { label: "Mango 🥭", value: "mango" },
+//   { label: "Strawberry 🍓", value: "strawberry", disabled: true },
+// ];
 
 const Select = (props: Props) => {
   const [option, setOption] = useState<Option[]>([]);
@@ -26,7 +26,6 @@ const Select = (props: Props) => {
       <h1 className="font-semibold leading-tight text-slate-800 dark:text-white">
         {props.label}
       </h1>
-      <pre>{JSON.stringify(props.selected)}</pre>
       <MultiSelect
         shouldToggleOnHover
         options={option}

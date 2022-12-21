@@ -87,7 +87,10 @@ const Products = (props: Props) => {
       render: (val) => (
         <div className="flex items-center gap-2">
           {val.category.map((item: Category) => (
-            <span className="rounded-full px-2 text-sm bg-slate-300">
+            <span
+              key={item.slug}
+              className="rounded-full px-2 text-sm bg-slate-300 dark:bg-slate-600"
+            >
               {item.slug}
             </span>
           ))}
@@ -106,16 +109,14 @@ const Products = (props: Props) => {
                 onClick={() => handleDeletePermanent(val.id)}
               >
                 <i className="fi-rr-delete"></i>
-                <span className="hidden lg:flex text-red-500">
-                  Delete Permanent
-                </span>
+                <span className="hidden lg:flex">Delete Permanent</span>
               </button>
               <button
                 onClick={() => handleRestore(val.id)}
                 className="text-sky-500 text-sm flex gap-1"
               >
                 <i className="fi-rr-recycle"></i>
-                <span className="hidden lg:flex text-sky-500">Restore</span>
+                <span className="hidden lg:flex">Restore</span>
               </button>
             </>
           ) : (
@@ -125,14 +126,14 @@ const Products = (props: Props) => {
                 onClick={() => handleDelete(val.id)}
               >
                 <i className="fi-rr-trash"></i>
-                <span className="hidden lg:flex text-pink-500">Delete</span>
+                <span className="hidden lg:flex">Delete</span>
               </button>
               <button
                 onClick={() => handleEdit(val)}
-                className="text-green-700 text-sm flex gap-1"
+                className="text-green-500 text-sm flex gap-1"
               >
                 <i className="fi-rr-pencil"></i>
-                <span className="hidden lg:flex text-green-700">Edit</span>
+                <span className="hidden lg:flex">Edit</span>
               </button>
               <button
                 onClick={() => handleAddStockModal(val)}
