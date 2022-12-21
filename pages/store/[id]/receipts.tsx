@@ -9,10 +9,11 @@ import {
 } from "@/components";
 import axios from "@/helper/lib/axios";
 import React, { useRef, useState } from "react";
-import useSWR from "swr";
+import useSWR, { SWRResponse } from "swr";
 import qs from "qs";
 import { useRouter } from "next/router";
 import { TableColumn } from "@/components/Tables/Table";
+import { getFetcher } from "@/helper/lib/api";
 
 type Props = {};
 
@@ -37,9 +38,7 @@ const Receipts = (props: Props) => {
     data: receipts,
     error,
     mutate,
-  } = useSWR(`/api/receipts?${query}`, (url) =>
-    axios.get(url).then((res) => res.data)
-  );
+  }: SWRResponse<any> = useSWR(`/api/receipts?${query}`, getFetcher);
 
   const columns: TableColumn<any>[] = [
     { title: "#", key: "id", dataType: "numbering" },

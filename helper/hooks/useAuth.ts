@@ -1,10 +1,11 @@
-import useSWR from "swr";
+import useSWR, { SWRResponse } from "swr";
 
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "../lib/axios";
 import { AuthInput, AuthUser, RegisterInput } from "../type/Auth";
 import { AxiosResponse } from "axios";
+import { getFetcher } from "../lib/api";
 
 export default function useAuth({ middleware }: any = {}) {
   const router = useRouter();
@@ -15,9 +16,7 @@ export default function useAuth({ middleware }: any = {}) {
     data: user,
     error,
     mutate,
-  } = useSWR("/api/user", (url) =>
-    axios.get(url).then((response: AxiosResponse<AuthUser>) => response.data)
-  );
+  }: SWRResponse<AuthUser> = useSWR("/api/user", getFetcher);
 
   const csrf = () => axios.get("/sanctum/csrf-cookie");
 

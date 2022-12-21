@@ -14,10 +14,12 @@ import useToggle from "@/helper/hooks/useToggle";
 import axios from "@/helper/lib/axios";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import useSWR from "swr";
+import useSWR, { SWRResponse } from "swr";
 import qs from "qs";
 import Swal from "sweetalert2";
 import useAuth from "@/helper/hooks/useAuth";
+import { getFetcher } from "@/helper/lib/api";
+import { Transaction } from "@/helper/type/Dashboard";
 
 type Props = {};
 
@@ -26,7 +28,7 @@ type Selected = {
   id: number;
 };
 
-const Transaction = (props: Props) => {
+const TransactionPage = (props: Props) => {
   const router = useRouter();
   const storeId = router.query.id;
   const { user } = useAuth({ middleware: "auth" });
@@ -49,9 +51,7 @@ const Transaction = (props: Props) => {
     data: products,
     error,
     mutate,
-  } = useSWR(`/api/transactions?${query}`, (url) =>
-    axios.get(url).then((res) => res.data)
-  );
+  }: SWRResponse<any> = useSWR(`/api/transactions?${query}`, getFetcher);
   const [selected, setSelected] = useState<Selected[]>([]);
 
   const columns: TableColumn<any>[] = [
@@ -222,4 +222,4 @@ const Transaction = (props: Props) => {
   );
 };
 
-export default Transaction;
+export default TransactionPage;

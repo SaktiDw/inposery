@@ -32,7 +32,7 @@ const DashboardCard = (props: Props) => {
           {props.diff && (
             <>
               <span
-                data-testid="normal"
+                data-testid="diff"
                 className={`${
                   props.diff > 0 ? "text-green-500" : "text-red-500"
                 }`}
@@ -45,9 +45,15 @@ const DashboardCard = (props: Props) => {
                 } animate-bounce`}
               >
                 {props.diff > 0 ? (
-                  <i className="flex items-start fi-rr-angle-small-up"></i>
+                  <i
+                    className="flex items-start fi-rr-angle-small-up"
+                    data-testid="up"
+                  ></i>
                 ) : (
-                  <i className="flex items-start fi-rr-angle-small-down"></i>
+                  <i
+                    className="flex items-start fi-rr-angle-small-down"
+                    data-testid="down"
+                  ></i>
                 )}
               </span>
             </>

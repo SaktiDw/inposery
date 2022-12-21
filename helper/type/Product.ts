@@ -1,3 +1,5 @@
+import { Option } from "react-multi-select-component";
+import { Category } from "./Category";
 import { Link } from "./Response";
 import { Store } from "./Store";
 
@@ -11,6 +13,7 @@ export interface Product {
   updated_at: Date;
   media: any[];
   store: Store;
+  category: Category[];
 }
 
 export interface ProductResponse {
@@ -34,4 +37,5 @@ export interface ProductInput {
   sell_price: string;
   store_id: string | string[] | undefined;
   image: string;
+  category?: Option[];
 }

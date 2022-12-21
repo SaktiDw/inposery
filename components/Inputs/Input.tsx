@@ -3,7 +3,7 @@ import React from "react";
 
 type Props = {
   id?: string;
-  errors: any;
+  errors?: any;
   label: string;
   name: string;
   type: string;
@@ -34,10 +34,10 @@ const Input = (props: Props) => {
           placeholder={props.placeholder}
           // required
           disabled={props.disabled || false}
-          className={`py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md ${
+          className={`py-2 px-4 rounded-lg w-full text-slate-800 dark:text-white bg-transparent ring-2 shadow-md disabled:ring-lime-800 ${
             props.errors ? "ring-red-500" : "ring-lime-500"
           } disabled:cursor-not-allowed`}
-          // defaultValue={props.defaultValue}
+          defaultValue={props.defaultValue}
           // tabIndex={0}
           // autoFocus={true}
         />

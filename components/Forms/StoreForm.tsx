@@ -31,12 +31,13 @@ const StoreForm = (props: Props) => {
       validationSchema={schema}
       onSubmit={(values, { setSubmitting }) => {
         props.isEdit <= 0
-          ? props.handleAdd(values)
-          : // .catch(
-            //   (err: any) =>
-            //     err.response && setErrorsResponse(err.response.data.message)
-            // )
-            props
+          ? props
+              .handleAdd(values)
+              .catch(
+                (err: any) =>
+                  err.response && setErrorsResponse(err.response.data.message)
+              )
+          : props
               .handleUpdate(props.isEdit, values)
               .catch(
                 (err: any) =>

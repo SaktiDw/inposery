@@ -1,14 +1,16 @@
 import useAuth from "@/helper/hooks/useAuth";
+import { getFetcher } from "@/helper/lib/api";
 import axios from "@/helper/lib/axios";
 import { filter } from "@/helper/lib/timeFilter";
 import { DashboardResponse } from "@/helper/type/Dashboard";
 import { TransactionType } from "@/helper/type/enum";
+import { StoresResponse } from "@/helper/type/Store";
 import { AxiosResponse } from "axios";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/router";
 import React from "react";
-import useSWR from "swr";
+import useSWR, { SWRResponse } from "swr";
 import { DashboardLayout, DashboardCard, ReportChart } from "../components";
 
 type Props = {};
@@ -16,13 +18,15 @@ type Props = {};
 const MainDashboard = (props: Props) => {
   const { isLoading } = useAuth({ middleware: "auth" });
   const router = useRouter();
-  const { data: stores } = useSWR("/api/stores", (url) =>
-    axios.get(url).then((res) => res.data)
+  const { data: stores }: SWRResponse<StoresResponse> = useSWR(
+    "/api/stores",
+    getFetcher
   );
   const storesId = stores && stores.data.map((item: any) => item.id);
 
-  const { data: dashboard } = useSWR(`/api/dashboard/?id=${storesId}`, (url) =>
-    axios.get(url).then((res: AxiosResponse<DashboardResponse[]>) => res.data)
+  const { data: dashboard }: SWRResponse<DashboardResponse[]> = useSWR(
+    `/api/dashboard/?id=${storesId}`,
+    getFetcher
   );
 
   const total_in = dashboard

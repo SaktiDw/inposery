@@ -2,12 +2,13 @@ import useAuth from "@/helper/hooks/useAuth";
 import axios from "@/helper/lib/axios";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import Swal from "sweetalert2";
 
 type Props = {};
 
 const EmailVerification = (props: Props) => {
   const router = useRouter();
-  const { user } = useAuth({ middleware: "auth" });
+  const { user, logout } = useAuth({ middleware: "auth" });
 
   if (user && user?.email_verified_at !== null) router.replace("/dashboard");
 
@@ -18,10 +19,13 @@ const EmailVerification = (props: Props) => {
           onClick={() =>
             axios
               .post("/api/resend-email-verification-link")
-              .then((res) => res.data)
+              .then((res) => Swal.fire("Success", res.data.message, "success"))
           }
         >
           Resend email verifycation link
+        </button>
+        <button onClick={() => logout().then((res) => router.push("/login"))}>
+          Logout
         </button>
       </div>
     </div>

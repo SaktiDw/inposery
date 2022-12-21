@@ -1,16 +1,15 @@
-import axios from "@/helper/lib/axios";
 import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { Input, SubmitButton } from "@/components";
-import useSWR from "swr";
-import qs from "qs";
 import { TransactionType } from "@/helper/type/enum";
+import { ProductInput } from "@/helper/type/Product";
 
 type Props = {
-  mutation: any;
+  mutation: (input: any) => Promise<any>;
   storeId: any;
-  productId: any;
+  productId: number;
+  initialValues: ProductInput;
 };
 const storeSchema = Yup.object().shape({
   type: Yup.string()
@@ -46,14 +45,31 @@ const TransactionForm = (props: Props) => {
       }}
       validationSchema={storeSchema}
       onSubmit={(values, { setSubmitting }) => {
-        props.mutation(values).catch((err: any) => {
-          err.response && setErrorsResponse(err.response.data.message);
-          setSubmitting(false);
-        });
+        props
+          .mutation({
+            type: values.type,
+            store_id: values.store_id,
+            transaction: [
+              {
+                qty: values.qty,
+                price: values.price,
+                discount: values.discount,
+                description: values.description,
+                product_id: values.product_id,
+              },
+            ],
+          })
+          .catch((err: any) => {
+            err.response && setErrorsResponse(err.response.data.message);
+            setSubmitting(false);
+          });
       }}
     >
       {({ isSubmitting, errors }) => (
         <Form className="flex flex-col justify-center items-stretch gap-4 ">
+          <h1 className="text-2xl text-ellipsis whitespace-nowrap truncate">
+            Product Name: {props.initialValues.name}
+          </h1>
           <span className="text-red-500">{errorsResponse}</span>
 
           <Input
@@ -62,6 +78,14 @@ const TransactionForm = (props: Props) => {
             name="qty"
             placeholder="e.g 20"
             type="number"
+          />
+          <Input
+            label={"Product Sell Price"}
+            name={"sell_price"}
+            type={"number"}
+            placeholder={props.initialValues.sell_price}
+            defaultValue={props.initialValues.sell_price}
+            disabled={true}
           />
           <Input
             errors={errors.price}

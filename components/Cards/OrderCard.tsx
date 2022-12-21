@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { PriceFormater } from "@/components";
+import { Cart } from "@/helper/type/Cashier";
 
 type Props = {
   index: number;
-  data: any;
-  onUpdate: (index: number, orderQty: number) => void;
-  onDelete: (index: number) => void;
+  data: Cart;
+  onUpdate: (item: Cart, orderQty: number) => void;
+  onDelete: (item: Cart) => void;
 };
 
 const OrderCard = (props: Props) => {
@@ -16,7 +17,7 @@ const OrderCard = (props: Props) => {
       <li className="bg-white dark:bg-slate-800 py-2 px-4 rounded-xl flex flex-col gap-2 relative shadow-md">
         <button
           className="bg-red-500 accent-current rounded-full absolute top-0 right-0 w-5 h-5 m-1 flex items-center justify-center"
-          onClick={() => props.onDelete(props.index)}
+          onClick={() => props.onDelete(props.data)}
         >
           <i className="fi-rr-cross-small"></i>
         </button>
@@ -30,7 +31,7 @@ const OrderCard = (props: Props) => {
             <button
               className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-500 w-8 h-8 rounded-lg "
               onClick={() =>
-                props.onUpdate(props.index, props.data.orderQty - 1)
+                props.onUpdate(props.data, props.data.orderQty - 1)
               }
             >
               <i className="flex items-center justify-center fi-rr-minus-small"></i>
@@ -39,7 +40,7 @@ const OrderCard = (props: Props) => {
               initialValues={{ orderQty: props.data.orderQty }}
               enableReinitialize={true}
               onSubmit={(values, {}) =>
-                props.onUpdate(props.index, values.orderQty)
+                props.onUpdate(props.data, values.orderQty)
               }
               validationSchema={Yup.object().shape({
                 orderQty: Yup.number()
@@ -67,7 +68,7 @@ const OrderCard = (props: Props) => {
               className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-500 w-8 h-8 rounded-lg "
               onClick={() =>
                 props.data.orderQty < props.data.qty &&
-                props.onUpdate(props.index, props.data.orderQty + 1)
+                props.onUpdate(props.data, props.data.orderQty + 1)
               }
               data-testid="increase"
             >

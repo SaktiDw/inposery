@@ -8,11 +8,12 @@ import {
 import axios from "@/helper/lib/axios";
 import { useRouter } from "next/router";
 import React from "react";
-import useSWR from "swr";
+import useSWR, { SWRResponse } from "swr";
 import { TransactionType } from "@/helper/type/enum";
 import useAuth from "@/helper/hooks/useAuth";
 import { AxiosResponse } from "axios";
 import { DashboardResponse } from "@/helper/type/Dashboard";
+import { getFetcher } from "@/helper/lib/api";
 
 type Props = {};
 
@@ -22,8 +23,9 @@ const Store = (props: Props) => {
 
   const { isLoading } = useAuth({ middleware: "auth" });
 
-  const { data: dashboard } = useSWR(`/api/dashboard/?id=${storeId}`, (url) =>
-    axios.get(url).then((res: AxiosResponse<DashboardResponse[]>) => res.data)
+  const { data: dashboard }: SWRResponse<DashboardResponse[]> = useSWR(
+    `/api/dashboard/?id=${storeId}`,
+    getFetcher
   );
 
   const total_in = dashboard

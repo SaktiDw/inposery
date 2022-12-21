@@ -1,4 +1,4 @@
-import { Input } from "@/components";
+import { GoogleButton, Input } from "@/components";
 import SubmitButton from "@/components/Buttons/SubmitButton";
 import useAuth from "@/helper/hooks/useAuth";
 import { AuthInput } from "@/helper/type/Auth";
@@ -21,7 +21,7 @@ const Login = (props: Props) => {
       .required("Required"),
   });
   return (
-    <div className="w-full min-h-screen bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-white flex items-center justify-center">
+    <div className="w-full min-h-screen bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-white flex items-center justify-center">
       <Formik
         validateOnMount
         initialTouched={{ email: true, password: true }}
@@ -70,6 +70,8 @@ const Login = (props: Props) => {
                 register here
               </Link>
             </span>
+            <span className="text-center text-slate-500">Or</span>
+            <GoogleButton type="login" />
           </Form>
         )}
       </Formik>

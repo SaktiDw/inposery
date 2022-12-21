@@ -2,9 +2,10 @@ import { Receipt, SubmitButton } from "@/components";
 import axios from "@/helper/lib/axios";
 import React, { useRef, useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
-import useSWR from "swr";
+import useSWR, { SWRResponse } from "swr";
 import ReactToPrint from "react-to-print";
 import { useRouter } from "next/router";
+import { getFetcher } from "@/helper/lib/api";
 
 type Props = {};
 
@@ -12,8 +13,9 @@ const Print = (props: Props) => {
   const router = useRouter();
   const { id } = router.query;
   const componentRef = useRef(null);
-  const { data: receipts, error } = useSWR(`/api/receipts/${id}`, (url) =>
-    axios.get(url).then((res) => res.data)
+  const { data: receipts, error }: SWRResponse<any> = useSWR(
+    `/api/receipts/${id}`,
+    getFetcher
   );
   if (error && error.response.status && error.response.status === 403)
     router.replace("/403");

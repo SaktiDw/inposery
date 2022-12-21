@@ -9,6 +9,10 @@ import {
   SubmitButton,
 } from "@/components";
 import { ProductInput, ProductResponse } from "@/helper/type/Product";
+import { getFetcher } from "@/helper/lib/api";
+import { Option } from "react-multi-select-component";
+import useSWR from "swr";
+import { Category } from "@/helper/type/Category";
 
 type Props = {
   handleAdd: (input: ProductInput) => Promise<ProductResponse | undefined>;
@@ -29,9 +33,11 @@ const schema = Yup.object().shape({
 });
 
 const ProductForm = (props: Props) => {
-  // const { data: categories } = useSWR("/api/categories?perPage=9999", (url) =>
-  //   axios.get(url).then((res) => res.data)
-  // );
+  const [selected, setSelected] = useState<Option[]>(
+    props.initialValues.category || []
+  );
+
+  const { data: categories } = useSWR("/api/categories", getFetcher);
 
   const [errorsResponse, setErrorsResponse] = useState([]);
   if (errorsResponse.length > 0)
@@ -45,6 +51,7 @@ const ProductForm = (props: Props) => {
       enableReinitialize={true}
       validationSchema={schema}
       onSubmit={async (values, { setSubmitting }) => {
+        values.category = selected;
         props.isEdit === 0
           ? await props
               .handleAdd(values)
@@ -79,6 +86,21 @@ const ProductForm = (props: Props) => {
             name="sell_price"
             placeholder="e.g 2000"
             type="number"
+          />
+          <Select
+            label="Category"
+            placeholder="Select"
+            options={
+              categories
+                ? categories.map((item: Category) => ({
+                    label: item.name,
+                    value: item.name,
+                  }))
+                : []
+            }
+            selected={selected}
+            setSelected={setSelected}
+            isCreateable={true}
           />
           <Dropzone
             value={values.image}

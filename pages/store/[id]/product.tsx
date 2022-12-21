@@ -1,4 +1,6 @@
 import {
+  CategoriesFilter,
+  FilterSelect,
   Modal,
   Pagination,
   PerPageSelect,
@@ -17,8 +19,11 @@ import { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Swal from "sweetalert2";
-import useSWR from "swr";
+import useSWR, { SWRResponse } from "swr";
 import qs from "qs";
+import { getFetcher } from "@/helper/lib/api";
+import { Category } from "@/helper/type/Category";
+import { MultiSelect, Option } from "react-multi-select-component";
 
 type Props = {};
 
@@ -41,10 +46,17 @@ const Products = (props: Props) => {
   const [perPage, setPerPage] = useState<string>("10");
   const [search, setSearch] = useState<string>("");
   const [pageIndex, setPageIndex] = useState<number>(1);
+  const [filter, setFilter] = useState("");
+  const [categoriesFilter, setCategoriesFilter] = useState<Option[]>([]);
 
   const query = qs.stringify(
     {
-      filter: { name: `${search}`, store_id: storeId },
+      filter: {
+        name: `${search}`,
+        store_id: storeId,
+        trashed: filter,
+        "category.name": `${categoriesFilter.map((item) => item.label)}`,
+      },
       limit: perPage,
       page: pageIndex,
     },
@@ -54,8 +66,9 @@ const Products = (props: Props) => {
     data: products,
     error,
     mutate,
-  } = useSWR(!isLoading ? `/api/products?${query}` : null, (url) =>
-    axios.get(url).then((res: AxiosResponse<ProductResponse>) => res.data)
+  }: SWRResponse<ProductResponse> = useSWR(
+    !isLoading ? `/api/products?${query}` : null,
+    getFetcher
   );
 
   const [selected, setSelected] = useState<number[]>([]);
@@ -69,31 +82,67 @@ const Products = (props: Props) => {
     },
     { title: "Quantity", key: "qty" },
     {
+      title: "Category",
+      key: "category",
+      render: (val) => (
+        <div className="flex items-center gap-2">
+          {val.category.map((item: Category) => (
+            <span className="rounded-full px-2 text-sm bg-slate-300">
+              {item.slug}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
       title: "Action",
       key: "id",
       render: (val) => (
         <div className="flex gap-4">
-          <button
-            className="text-pink-500 text-sm flex gap-1"
-            onClick={() => handleDelete(val.id)}
-          >
-            <i className="fi-rr-trash"></i>
-            <span className="hidden lg:flex text-pink-500">Delete</span>
-          </button>
-          <button
-            onClick={() => handleEdit(val)}
-            className="text-green-700 text-sm flex gap-1"
-          >
-            <i className="fi-rr-pencil"></i>
-            <span className="hidden lg:flex text-green-700">Edit</span>
-          </button>
-          <button
-            onClick={() => handleAddStockModal(val)}
-            className="text-blue-500 text-sm flex gap-1"
-          >
-            <i className="fi-rr-plus"></i>
-            <span className="hidden lg:flex text-blue-500">Add Stock</span>
-          </button>
+          {val.deleted_at ? (
+            <>
+              <button
+                className="text-red-500 text-sm flex gap-1"
+                onClick={() => handleDeletePermanent(val.id)}
+              >
+                <i className="fi-rr-delete"></i>
+                <span className="hidden lg:flex text-red-500">
+                  Delete Permanent
+                </span>
+              </button>
+              <button
+                onClick={() => handleRestore(val.id)}
+                className="text-sky-500 text-sm flex gap-1"
+              >
+                <i className="fi-rr-recycle"></i>
+                <span className="hidden lg:flex text-sky-500">Restore</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="text-pink-500 text-sm flex gap-1"
+                onClick={() => handleDelete(val.id)}
+              >
+                <i className="fi-rr-trash"></i>
+                <span className="hidden lg:flex text-pink-500">Delete</span>
+              </button>
+              <button
+                onClick={() => handleEdit(val)}
+                className="text-green-700 text-sm flex gap-1"
+              >
+                <i className="fi-rr-pencil"></i>
+                <span className="hidden lg:flex text-green-700">Edit</span>
+              </button>
+              <button
+                onClick={() => handleAddStockModal(val)}
+                className="text-blue-500 text-sm flex gap-1"
+              >
+                <i className="fi-rr-plus"></i>
+                <span className="hidden lg:flex text-blue-500">Add Stock</span>
+              </button>
+            </>
+          )}
         </div>
       ),
     },
@@ -104,6 +153,7 @@ const Products = (props: Props) => {
     sell_price: "",
     store_id: "",
     image: "",
+    category: [],
   };
   const [initialValues, setInitialValues] = useState(defaultValues);
   const [productId, setproductId] = useState(0);
@@ -162,7 +212,31 @@ const Products = (props: Props) => {
       return mutate();
     });
   };
+  const handleDeletePermanent = async (id: number) => {
+    await axios
+      .delete(`/api/products/${id}/delete-permanent`)
+      .then((res) => {
+        Swal.fire("Success!", `${res.data.message}`, "success");
+        return mutate();
+      })
+      .catch((err) => Swal.fire("Error!", `${err}`, "error"));
+  };
+  const handleRestore = async (id: number) => {
+    await axios
+      .get(`/api/products/${id}/restore`)
+      .then((res) => {
+        Swal.fire("Success!", `${res.data.message}`, "success");
+        return mutate();
+      })
+      .catch((err) => Swal.fire("Error!", `${err}`, "error"));
+  };
   const handleEdit = (product: Product) => {
+    const categories = product.category
+      ? product.category.map((item: Category) => ({
+          label: item.name,
+          value: item.name,
+        }))
+      : [];
     setToggle(true);
     setproductId(product.id);
     setInitialValues({
@@ -170,6 +244,7 @@ const Products = (props: Props) => {
       sell_price: product.sell_price.toString(),
       store_id: product.store_id.toString(),
       image: "",
+      category: categories,
     });
   };
   const handleUpdate = async (id: number, input: ProductInput) => {
@@ -191,6 +266,12 @@ const Products = (props: Props) => {
   const handleAddStockModal = (product: Product) => {
     setModalToggle(true);
     setproductId(product.id);
+    setInitialValues({
+      name: product.name,
+      sell_price: product.sell_price.toString(),
+      store_id: product.store_id.toString(),
+      image: "",
+    });
   };
 
   const handleAddStock = async (input: ProductInput) => {
@@ -211,8 +292,13 @@ const Products = (props: Props) => {
   return (
     <StoreLayout>
       <div className="flex flex-wrap justify-between sm:justify-start gap-4">
+        <FilterSelect onChange={(e) => setFilter(e.target.value)} />
         <PerPageSelect onChange={(e) => setPerPage(e.target.value)} />
         <SearchInput onChange={(e) => setSearch(e.target.value)} />
+        <CategoriesFilter
+          selected={categoriesFilter}
+          onChange={setCategoriesFilter}
+        />
         <button
           className="sm:ml-auto py-2 px-4 shadow-lg rounded-lg bg-gradient-to-tl from-red-700 to-pink-500 text-white"
           onClick={() => handleDelete(selected)}
@@ -258,6 +344,7 @@ const Products = (props: Props) => {
           mutation={handleAddStock}
           storeId={storeId}
           productId={productId}
+          initialValues={initialValues}
         />
       </Modal>
     </StoreLayout>

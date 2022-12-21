@@ -17,9 +17,12 @@ const Navigation = (props: Props) => {
         <button className="p-3" onClick={props.onClick}>
           <i className="fi-rr-menu-burger"></i>
         </button>
-        <span className="font-bold text-2xl invisible sm:visible">
+        <Link
+          href={"/dashboard"}
+          className="font-bold text-2xl invisible sm:visible"
+        >
           In<span className="text-lime-500">POS</span>ery
-        </span>
+        </Link>
       </div>
       {/* <span className="text-lime-500 font-bold text-2xl">Store Name</span> */}
       <div className="flex gap-2 ">

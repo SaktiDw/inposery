@@ -54,3 +54,132 @@ exports[`DashboardCard > should be rendered pricing  1`] = `
   </div>
 </div>
 `;
+
+exports[`DashboardCard > should be rendered the different from sales and modal 1`] = `
+<div>
+  <div
+    class="flex flex-col rounded-lg bg-white dark:bg-slate-800 p-4
+ shadow-lg"
+  >
+    <span
+      class="text-slate-500"
+    >
+      Today Profit
+    </span>
+    <div
+      class="flex items-end"
+    >
+      <span
+        class="text-xl font-bold"
+      >
+        Rp 100.000
+      </span>
+      <div
+        class="text-sm flex items-end ml-auto"
+      >
+        <span
+          class="text-green-500"
+          data-testid="diff"
+        >
+          9
+          %
+        </span>
+        <span
+          class="text-green-500 animate-bounce"
+        >
+          <i
+            class="flex items-start fi-rr-angle-small-up"
+            data-testid="up"
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DashboardCard > should be rendered the different with icon up 1`] = `
+<div>
+  <div
+    class="flex flex-col rounded-lg bg-white dark:bg-slate-800 p-4
+ shadow-lg"
+  >
+    <span
+      class="text-slate-500"
+    >
+      Today Sales
+    </span>
+    <div
+      class="flex items-end"
+    >
+      <span
+        class="text-xl font-bold"
+      >
+        Rp 100.000
+      </span>
+      <div
+        class="text-sm flex items-end ml-auto"
+      >
+        <span
+          class="text-green-500"
+          data-testid="diff"
+        >
+          9
+          %
+        </span>
+        <span
+          class="text-green-500 animate-bounce"
+        >
+          <i
+            class="flex items-start fi-rr-angle-small-up"
+            data-testid="up"
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DashboardCard > should be rendered the different with icon up 2`] = `
+<div>
+  <div
+    class="flex flex-col rounded-lg bg-white dark:bg-slate-800 p-4
+ shadow-lg"
+  >
+    <span
+      class="text-slate-500"
+    >
+      Today Sales
+    </span>
+    <div
+      class="flex items-end"
+    >
+      <span
+        class="text-xl font-bold"
+      >
+        Rp 100.000
+      </span>
+      <div
+        class="text-sm flex items-end ml-auto"
+      >
+        <span
+          class="text-red-500"
+          data-testid="diff"
+        >
+          -9
+          %
+        </span>
+        <span
+          class="text-red-500 animate-bounce"
+        >
+          <i
+            class="flex items-start fi-rr-angle-small-down"
+            data-testid="down"
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -21,11 +21,6 @@ html {
   word-break: break-word;
 }
 
-/* ::selection {
-    color: hsl(var(--pc));
-    background: hsl(var(--p));
-  } */
-
 /* Scrollbar styles */
 
 /* Firefox */
@@ -50,14 +45,31 @@ html {
   border: 3px solid hsl(var(--p));
 }
 
+/* Light mode */
+@media (prefers-color-scheme: light) {
+  :root {
+    --font-color: rgb(30 41 59);
+    --bg-color: white;
+    --hover-color: rgb(241 245 249);
+  }
+}
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --font-color: #fff;
+    --bg-color: rgb(30 41 59);
+    --hover-color: rgb(30 41 59);
+  }
+}
+
 .rmsc {
   --rmsc-main: #4285f4 !important;
-  --rmsc-hover: #0f172a !important;
-  --rmsc-selected: #0f172a !important;
+  --rmsc-hover: var(--hover-color) !important;
+  --rmsc-selected: var(--hover-color) !important;
   --rmsc-border: transparent !important;
-  --rmsc-gray: #fff !important;
-  --rmsc-bg: #0f172a !important;
+  --rmsc-gray: #aaa !important;
+  --rmsc-bg: var(--bg-color) !important;
   --rmsc-p: 10px !important; /* Spacing */
-  --rmsc-radius: 4px !important; /* Radius */
+  --rmsc-radius: 8px !important; /* Radius */
   --rmsc-h: 38px !important; /* Height */
 }

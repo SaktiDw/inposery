@@ -1,8 +1,10 @@
+import { getFetcher } from "@/helper/lib/api";
 import axios from "@/helper/lib/axios";
+import { Store } from "@/helper/type/Store";
 import { Navigation, Sidebar, SidebarItem } from "components";
 import { useRouter } from "next/router";
 import React from "react";
-import useSWR, { SWRConfig } from "swr";
+import useSWR, { SWRConfig, SWRResponse } from "swr";
 import useToggle from "../../helper/hooks/useToggle";
 
 const StoreLayout = ({ children }: { children: React.ReactNode }) => {
@@ -10,14 +12,29 @@ const StoreLayout = ({ children }: { children: React.ReactNode }) => {
   const { id: storeId } = router.query;
   const { toggle, toggler } = useToggle();
   const basePath = "/store/[id]";
-  const { data: store, error } = useSWR(
+  const {
+    data: store,
+    error,
+    isValidating,
+  }: SWRResponse<Store> = useSWR(
     storeId ? `/api/stores/${storeId}` : null,
-    (url) => axios.get(url).then((res) => res.data)
+    getFetcher,
+    { refreshWhenHidden: true }
   );
 
-  if (error && error.response.status && error.response.status === 403)
+  if (
+    !isValidating &&
+    error &&
+    error.response.status &&
+    error.response.status === 403
+  )
     router.replace("/403");
-  if (error && error.response.status && error.response.status === 404)
+  if (
+    !isValidating &&
+    error &&
+    error.response.status &&
+    error.response.status === 404
+  )
     router.replace("/404");
 
   return (
@@ -69,7 +86,7 @@ const StoreLayout = ({ children }: { children: React.ReactNode }) => {
             /> */}
         </Sidebar>
         <main className="flex flex-col gap-4 w-full min-h-screen h-full overflow-x-hidden overflow-y-auto pt-20 pb-4 px-8 relative">
-          {!error && children}
+          {!error && store && children}
         </main>
       </div>
     </div>

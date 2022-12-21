@@ -6,13 +6,15 @@ describe("DashboardCard", () => {
   const tree = (
     title: string,
     subtitle: number,
-    type?: "pricing" | undefined
+    type?: "pricing" | undefined,
+    diff?: number
   ) =>
     render(
       <DashboardCard
         title={title}
         subtitle={subtitle}
         type={type || undefined}
+        diff={diff}
       />
     );
 
@@ -34,5 +36,41 @@ describe("DashboardCard", () => {
     expect(container).toMatchSnapshot();
     expect(queryByTestId("normal")).toBeNull();
     expect(queryByTestId("pricing")).toBeDefined();
+  });
+
+  it("should be rendered the different from sales and modal", () => {
+    const { container, queryByTestId } = tree(
+      "Today Profit",
+      100000,
+      "pricing",
+      9
+    );
+    expect(container).toBeDefined();
+    expect(container).toMatchSnapshot();
+    expect(queryByTestId("diff")).toBeDefined();
+  });
+  it("should be rendered the different with icon up", () => {
+    const { container, queryByTestId } = tree(
+      "Today Sales",
+      100000,
+      "pricing",
+      9
+    );
+    expect(container).toBeDefined();
+    expect(container).toMatchSnapshot();
+    expect(queryByTestId("diff")).toBeDefined();
+    expect(queryByTestId("up")).toBeDefined();
+  });
+  it("should be rendered the different with icon up", () => {
+    const { container, queryByTestId } = tree(
+      "Today Sales",
+      100000,
+      "pricing",
+      -9
+    );
+    expect(container).toBeDefined();
+    expect(container).toMatchSnapshot();
+    expect(queryByTestId("diff")).toBeDefined();
+    expect(queryByTestId("down")).toBeDefined();
   });
 });

@@ -55,8 +55,8 @@ const Table = (props: Props) => {
   // };
   if (!props.data) return <>Tidak ada Data</>;
   return (
-    <div className="relative flex w-full overflow-x-auto rounded-lg shadow-xl">
-      <table className="bg-white dark:bg-slate-800 rounded-lg table table-auto min-w-full">
+    <div className="relative flex w-full overflow-x-auto rounded-lg shadow-xl pb-2">
+      <table className="flex-shrink-0 w-max bg-white dark:bg-slate-800 rounded-lg table table-auto min-w-full">
         <thead>
           <tr className="text-left bg-gradient-to-tl from-green-700 to-lime-500 ">
             {props.selected && (

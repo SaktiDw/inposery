@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import qs from "qs";
+import { getFetcher } from "@/helper/lib/api";
 
 type Props = {};
 
@@ -43,9 +44,7 @@ const Transaction = (props: Props) => {
     data: products,
     error,
     mutate,
-  } = useSWR(`/api/test?${query}`, (url) =>
-    axios.get(url).then((res) => res.data)
-  );
+  } = useSWR(`/api/test?${query}`, (url) => getFetcher);
   const [selected, setSelected] = useState<Selected[]>([]);
 
   const columns: TableColumn<any>[] = [

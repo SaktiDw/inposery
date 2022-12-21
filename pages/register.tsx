@@ -1,4 +1,4 @@
-import { Input } from "@/components";
+import { GoogleButton, Input } from "@/components";
 import SubmitButton from "@/components/Buttons/SubmitButton";
 import useAuth from "@/helper/hooks/useAuth";
 import { AuthInput } from "@/helper/type/Auth";
@@ -96,6 +96,8 @@ const Register = (props: Props) => {
                 login here
               </Link>
             </span>
+            <span className="text-center text-slate-500">Or</span>
+            <GoogleButton type="register" />
           </Form>
         )}
       </Formik>

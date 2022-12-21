@@ -8,6 +8,8 @@ type Props = {
   data: any;
   onDelete: () => void;
   onEdit: () => void;
+  onDeletePermanent: () => void;
+  onRestore: () => void;
 };
 
 const StoreCard = (props: Props) => {
@@ -23,23 +25,49 @@ const StoreCard = (props: Props) => {
       >
         <i className="fi-rr-menu-dots-vertical"></i>
         <div
-          className={`bg-slate-100 dark:bg-slate-800 flex flex-col rounded-lg right-5 m-2 w-32 ${
+          className={`bg-slate-100 dark:bg-slate-800 flex flex-col rounded-lg right-5 m-2 w-max ${
             toggle ? "h-90" : "h-0"
           } absolute top-0 overflow-hidden `}
         >
-          <div
-            className="py-2 px-8 hover:bg-slate-500"
-            onClick={props.onDelete}
-          >
-            Delete
-          </div>
-          <div className="py-2 px-8 hover:bg-slate-500" onClick={props.onEdit}>
-            Edit
-          </div>
+          {props.data.deleted_at ? (
+            <>
+              <div
+                className="py-2 px-8 hover:bg-slate-500"
+                onClick={props.onDeletePermanent}
+              >
+                Delete Permanent
+              </div>
+              <div
+                className="py-2 px-8 hover:bg-slate-500"
+                onClick={props.onRestore}
+              >
+                Restore
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                className="py-2 px-8 hover:bg-slate-500"
+                onClick={props.onDelete}
+              >
+                Delete
+              </div>
+              <div
+                className="py-2 px-8 hover:bg-slate-500"
+                onClick={props.onEdit}
+              >
+                Edit
+              </div>
+            </>
+          )}
         </div>
       </button>
       <div
-        className={`relative bg-gradient-to-tl from-green-700 to-lime-500  p-2 leading-tight w-full h-[150px] overflow-hidden `}
+        className={`relative bg-gradient-to-tl ${
+          props.data.deleted_at
+            ? "from-green-900 to-lime-700"
+            : "from-green-700 to-lime-500"
+        }  p-2 leading-tight w-full h-[150px] overflow-hidden `}
       >
         {props.data.media[0] && (
           <Image
@@ -47,7 +75,9 @@ const StoreCard = (props: Props) => {
             quality={75}
             src={props.data.media[0]?.original_url}
             alt={props.data.media[0]?.file_name}
-            className={`object-cover w-full h-full`}
+            className={`object-cover w-full h-full ${
+              props.data.deleted_at && "opacity-20"
+            }`}
             data-testid="img"
           />
         )}
