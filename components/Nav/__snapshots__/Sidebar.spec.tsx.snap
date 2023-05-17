@@ -14,7 +14,7 @@ w-[300px]"
     <div
       class="p-4 mx-4 rounded-md shadow-lg bg-gradient-to-tl from-green-700 to-lime-500 mt-auto flex gap-2"
     >
-      Pro
+      Dashboard
     </div>
   </aside>
 </div>

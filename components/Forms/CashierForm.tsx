@@ -161,6 +161,7 @@ function CashierForm(props: Props) {
                 product_id: item.id,
                 description: "-",
                 discount: 0,
+                customer: activeCustomer[0],
               }));
             await axios
               .post("/api/transactions", {

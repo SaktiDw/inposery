@@ -18,7 +18,7 @@ axios.interceptors.response.use(
     if (error.response && error.response.status === 401 && !config._retry) {
       config._retry = true;
 
-      window.location.href = "/login";
+      window.location.href = "/auth/login";
       return Promise.reject(error);
     }
     return Promise.reject(error);

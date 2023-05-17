@@ -64,23 +64,47 @@ const Stores = (props: Props) => {
   };
 
   const handleDelete = async (id: number) => {
-    await axios
-      .delete(`/api/stores/${id}`)
-      .then((res) => {
-        Swal.fire("Success!", `${res.data.message}`, "success");
-        cache.delete(`/api/stores/${id}`);
-        return mutate();
-      })
-      .catch((err) => Swal.fire("Error!", `${err}`, "error"));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios
+          .delete(`/api/stores/${id}`)
+          .then((res) => {
+            Swal.fire("Success!", `${res.data.message}`, "success");
+            cache.delete(`/api/stores/${id}`);
+            return mutate();
+          })
+          .catch((err) => Swal.fire("Error!", `${err}`, "error"));
+      }
+    });
   };
   const handleDeletePermanent = async (id: number) => {
-    await axios
-      .delete(`/api/stores/${id}/delete-permanent`)
-      .then((res) => {
-        Swal.fire("Success!", `${res.data.message}`, "success");
-        return mutate();
-      })
-      .catch((err) => Swal.fire("Error!", `${err}`, "error"));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios
+          .delete(`/api/stores/${id}/delete-permanent`)
+          .then((res) => {
+            Swal.fire("Success!", `${res.data.message}`, "success");
+            return mutate();
+          })
+          .catch((err) => Swal.fire("Error!", `${err}`, "error"));
+      }
+    });
   };
   const handleRestore = async (id: number) => {
     await axios

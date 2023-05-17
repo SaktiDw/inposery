@@ -61,15 +61,23 @@ const Login = (props: Props) => {
               disabled={isSubmitting}
               text={`${isSubmitting ? "Loading..." : "Login"}`}
             />
-            <span className="text-slate-500">
-              Dont have an account?{" "}
+            <div className="flex flex-col sm:flex-row gap-2 justify-between">
+              <span className="text-slate-500">
+                Dont have an account?{" "}
+                <Link
+                  href={"/register"}
+                  className="text-green-600 hover:text-green-500 font-semibold"
+                >
+                  register here
+                </Link>
+              </span>
               <Link
-                href={"/register"}
+                href={"/password-reset"}
                 className="text-green-600 hover:text-green-500 font-semibold"
               >
-                register here
+                Forgot your password?
               </Link>
-            </span>
+            </div>
             <span className="text-center text-slate-500">Or</span>
             <GoogleButton type="login" />
           </Form>

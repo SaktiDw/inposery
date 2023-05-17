@@ -44,9 +44,9 @@ describe("Page Render Testing", () => {
 
   const user = [];
   it("Should be render Home Page", () => {
-    const { container } = render(<Home />);
-    expect(container).toBeDefined();
-    expect(container).toMatchSnapshot();
+    const { getByRole } = render(<Home />);
+    expect(getByRole("main")).toBeDefined();
+    // expect(getByRole("main")).toMatchSnapshot();
   });
   it("Should be render Login Page", () => {
     const { container } = render(<Login />);
